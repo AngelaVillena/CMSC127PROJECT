@@ -104,3 +104,20 @@ mycursor = db.cursor()
 # """)
 
 #  CONSTRAINT REVIEW_User_id_fk FOREIGN KEY User_id REFERENCES USER(User_id),
+
+
+# CREATE ANOTHER TABLE FOR FOOD TYPE
+# mycursor.execute("""
+#     CREATE TABLE FOOD_TYPE
+#        ( Foodtype_id INT(2) PRIMARY KEY,
+#         Foodtype_name VARCHAR(50))
+# """
+# )
+
+# if this doesnt work execute in cmd :> || hardcoded values nalang?
+# mycursor.execute("""
+#     INSERT INTO FOOD_TYPE(Foodtype_id, Foodtype_name) VALUES(1, "Appetizer"),(2, "Entree/Main Dish"),(3, "Sides"),(4, "Dessert")
+
+# """
+
+# )

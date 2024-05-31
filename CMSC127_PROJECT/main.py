@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, ttk
 
 import mysql.connector
 
@@ -32,9 +32,33 @@ def mainpage():
     
        
     def add_foodestablishment():
-  
+      def delete_foodestablishment():
+#    hindi madelete because of a foreign key constraint
+         def delete_submit_data():
+            deleteid = delete2.get()
+            print("*****************Delete id:", deleteid)  
+            sql = "DELETE FROM FOOD_ESTABLISHMENT where Business_id = %s"
+            val = (deleteid,) 
+            try:
+                mycursor.execute(sql, val)
+                db.commit()
+                messagebox.showinfo("Food establishment has been deleted!")
+                delete1.destroy()
+            except mysql.connector.Error as error:
+                messagebox.showerror("Error", f"Error: {error}")
 
-         
+            delete1.destroy()
+         delete1 = tk.Toplevel(main_window)
+         delete1.geometry("500x300")
+         delete1.title("Delete a food establishment")
+         tk.Label(delete1, text = "Enter business id: ").grid(row=0, column=0, padx=10, pady=10)
+         delete2 = tk.Entry(delete1, width=40, font=('Arial', 14))
+         delete2.grid(row=0, column=1, columnspan=2)
+         submit = tk.Button(delete1, text='Submit Now', command=delete_submit_data)
+         submit.grid(row=1, column=1)  
+
+
+             
       def edit_foodestablishment():
          def edit_submit_data():
             editid = editbusinessid.get()
@@ -45,11 +69,9 @@ def mainpage():
             mycursor.execute(sql, val)
             db.commit()
             messagebox.showinfo("Success", "Food establishment has been edited successfully!")
-            new_window.destroy()
+            edit1.destroy()
 
 
-            
-         print('here')
          edit1 = tk.Toplevel(main_window)
          edit1.geometry("700x300")
          edit1.title("Edit food establishment")
@@ -112,7 +134,7 @@ def mainpage():
       edit.grid(row=3, column=2)  
 
 # add implementation for delete button
-      delete = tk.Button(new_window, text='Delete')
+      delete = tk.Button(new_window, text='Delete', command = delete_foodestablishment)
       delete.grid(row=3, column=3)  
 
     AddFoodEstablishment = tk.Button(main_window, text='Add a new food establishment', command=add_foodestablishment)
@@ -120,11 +142,12 @@ def mainpage():
 
     def add_fooditem():
     
+        
       def submit_data():
           food_id = foodid.get()
           food_name = foodname.get()
           food_price = price.get()
-          type_of_food = typeoffood.get()
+          type_of_food = typeoffood_list.get()
           food_description = description.get()
           food_businessid =businessid.get()
           
@@ -139,6 +162,12 @@ def mainpage():
       fooditem = tk.Toplevel(main_window)
       fooditem.geometry("700x300")
       fooditem.title("Add new food item")
+      typeoffood_list = ttk.Combobox(fooditem,state="readonly",
+        values=["Appetizer", "Entree/ Main Dish", "Sides", "Dessert"]
+      )
+
+      
+   
       
       labels = ['Food id:', 'Food name:', 'Price:','Type of food:', 'Description','Business id:']
       for i in range(6):
@@ -153,8 +182,9 @@ def mainpage():
       price = tk.Entry(fooditem, width=40, font=('Arial', 14))
       price.grid(row=2, column=1, columnspan=2)
 
-      typeoffood = tk.Entry(fooditem, width=40, font=('Arial', 14))
-      typeoffood.grid(row=3, column=1, columnspan=2)
+    #   typeoffood = tk.Entry(fooditem, width=40, font=('Arial', 14))
+    #   typeoffood.grid(row=3, column=1, columnspan=2)
+      typeoffood_list.grid(row=3, column=1,columnspan=2)
 
       description = tk.Entry(fooditem, width=40, font=('Arial', 14))
       description.grid(row=4, column=1, columnspan=2)
@@ -241,6 +271,8 @@ def mainpage():
     # view all food reviews
     viewAllFoodReviews = tk.Button(main_window, text='View all food reviews', command=viewFoodReviews)
     viewAllFoodReviews.pack(pady=20)
+
+
 
 
 
