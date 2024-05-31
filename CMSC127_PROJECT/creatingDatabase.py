@@ -3,7 +3,7 @@ import mysql.connector
 db =  mysql.connector.connect(
   host  = "localhost",
   user= "root",
-  password="hershey",
+  password="angel",
   database = "finalproject"
 )
 
@@ -148,3 +148,5 @@ mycursor = db.cursor()
 #     FOREIGN KEY (User_id) 
 #     REFERENCES USER(User_id)
 # """)
+
+#  alter table review change column `Review_no` `Review_num` int(5) PRIMARY KEY AUTO_INCREMENT;

@@ -141,6 +141,8 @@ def mainpage():
     AddFoodEstablishment.pack(pady=20)
 
     def add_fooditem():
+ 
+
     
         
       def submit_data():
@@ -194,6 +196,12 @@ def mainpage():
 
       submit = tk.Button(fooditem, text='Submit Now', command=submit_data)
       submit.grid(row=7, column=1)  
+
+      edit_fooditem = tk.Button(fooditem, text='Edit')
+      edit_fooditem.grid(row=7, column=2)  
+
+      delete_fooditem = tk.Button(fooditem, text='Delete')
+      delete_fooditem.grid(row=7, column=3)  
 
 
 
@@ -273,6 +281,8 @@ def mainpage():
       userid.grid(row=5, column=1, columnspan=2)
       submit = tk.Button(foodreview, text='Submit Now', command=submit_data)
       submit.grid(row=6, column=1)  
+
+
 
 
 
