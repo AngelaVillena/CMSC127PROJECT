@@ -3,7 +3,7 @@ import mysql.connector
 db =  mysql.connector.connect(
   host  = "localhost",
   user= "root",
-  password="angel",
+  password="hershey",
   database = "finalproject"
 )
 
@@ -121,3 +121,30 @@ mycursor = db.cursor()
 # """
 
 # )
+
+# CREATES ESTABLISHMENT REVIEW TABLE
+# mycursor.execute("""
+# CREATE TABLE ESTABLISHMENTREVIEW (
+#     Review_no INT(5) PRIMARY KEY , 
+#     Description VARCHAR(50),
+#     Rating decimal(3,2),
+#     Time TIME,
+#     Date DATE,
+#     Business_id INT(5),   
+#     CONSTRAINT ESTABLISHMENTREVIEW_Business_id_fk FOREIGN KEY(Business_id) REFERENCES FOOD_ESTABLISHMENT(Business_id)
+# );
+# """)
+
+# ADD USER ID FOR FOREIGN KEY IN ESTABLISHMENT REVIEW TABLE
+# mycursor.execute("""
+# ALTER TABLE ESTABLISHMENTREVIEW 
+# ADD COLUMN User_id INT(10)
+# """)
+
+# ADDS CONSTRAINT IN ESTABLISHMENT REVIEW TABLE
+mycursor.execute("""
+    ALTER TABLE ESTABLISHMENTREVIEW 
+    ADD CONSTRAINT ESTABLISHMENTREVIEW_User_id_fk
+    FOREIGN KEY (User_id) 
+    REFERENCES USER(User_id)
+""")
