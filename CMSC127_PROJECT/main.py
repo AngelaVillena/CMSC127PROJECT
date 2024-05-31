@@ -222,7 +222,61 @@ def mainpage():
                     tk.Label(allFoodReviews, text=value).grid(row=i, column=j, padx=10, pady=10) 
                     tk.Button(allFoodReviews, text='Edit').grid(row=i, column=9)
 
+
     def viewFoodEstablishments():
+        def edit_foodestablishment():
+            def edit_submit_data():
+                editid = editbusinessid.get()
+                editbusiness_name = editbusinessname.get()
+                editbusiness_address = editbusinessaddress.get()
+                sql = "UPDATE FOOD_ESTABLISHMENT SET Name = %s, Address = %s where Business_id = %s"
+                val = ( editbusiness_name, editbusiness_address, editid)
+                mycursor.execute(sql, val)
+                db.commit()
+                messagebox.showinfo("Success", "Food establishment has been edited successfully!")
+                edit1.destroy()
+
+
+            edit1 = tk.Toplevel(main_window)
+            edit1.geometry("700x300")
+            edit1.title("Edit food establishment")
+            labels = ['Enter business id:', 'Enter new business name:', 'Enter new business address:']
+            for i in range(3):
+                tk.Label(edit1, text=labels[i]).grid(row=i, column=0, padx=10, pady=10)
+        
+            editbusinessid = tk.Entry(edit1, width=40, font=('Arial', 14))
+            editbusinessid.grid(row=0, column=1, columnspan=2)
+
+        
+            editbusinessname = tk.Entry(edit1, width=40, font=('Arial', 14))
+            editbusinessname.grid(row=1, column=1, columnspan=2)
+
+            
+            # select * from FOOD ESTABLISHMENT where business id = %s
+            editbusinessaddress = tk.Entry(edit1, width=40, font=('Arial', 14))
+            editbusinessaddress.grid(row=2, column=1, columnspan=2)
+            
+            submit = tk.Button(edit1, text='Submit', command=edit_submit_data)
+            submit.grid(row=3, column=1)  
+
+        def viewFoodItems(items, row, col):
+            # def viewByFoodType():
+                
+            allFoodItems = tk.Toplevel(main_window)
+            allFoodItems.geometry("700x700")
+            allFoodItems.title("Food Items")
+
+            tk.Label(allFoodItems, text = "Sort by: ").grid(row=0, column=0, padx=10, pady=10)
+
+            businessid = items[row][col]
+
+            sql = "SELECT * FROM food_item WHERE Business_id = " + str(businessid)
+            mycursor.execute(sql)
+            items = mycursor.fetchall()
+            for i, item in enumerate(items):
+                for j, value in enumerate(item):
+                    tk.Label(allFoodItems, text=value).grid(row=i+1, column=j, padx=10, pady=10) 
+
         allFoodEstablishments = tk.Toplevel(main_window)
         allFoodEstablishments.geometry("700x700")
         allFoodEstablishments.title("Food Establishments")
@@ -233,7 +287,12 @@ def mainpage():
         for i, establishment in enumerate(establishments):
             for j, value in enumerate(establishment):
                 tk.Label(allFoodEstablishments, text=value).grid(row=i, column=j, padx=10, pady=10) 
-                tk.Button(allFoodEstablishments, text='Edit').grid(row=i, column=9)
+            
+                edit_foodEstablishment = tk.Button(allFoodEstablishments, text='Edit', command=edit_foodestablishment)
+                edit_foodEstablishment.grid(row=i, column=9, padx=10, pady=10)  
+
+                view_foodEstablishment = tk.Button(allFoodEstablishments, text='View all food items', command= lambda row=i, column=0: viewFoodItems(establishments, row, column))
+                view_foodEstablishment.grid(row=i, column=10) 
        
        
     def add_foodreview():
@@ -254,6 +313,7 @@ def mainpage():
           print("Record inserted successfully!")
           messagebox.showinfo("Success", "Review has been recorded successfully!")
           foodreview.destroy()
+
       foodreview = tk.Toplevel(main_window)
       foodreview.geometry("700x300")
       foodreview.title("Add new food item")
