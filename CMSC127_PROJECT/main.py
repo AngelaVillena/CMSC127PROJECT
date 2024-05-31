@@ -29,9 +29,52 @@ def mainpage():
     
     main_window.geometry("700x500")
     main_window.title("Main Window")
-    def add_foodestablishment():
     
-      def submit_data():
+       
+    def add_foodestablishment():
+  
+
+         
+      def edit_foodestablishment():
+         def edit_submit_data():
+            editid = editbusinessid.get()
+            editbusiness_name = editbusinessname.get()
+            editbusiness_address = editbusinessaddress.get()
+            sql = "UPDATE FOOD_ESTABLISHMENT SET Name = %s, Address = %s where Business_id = %s"
+            val = ( editbusiness_name, editbusiness_address, editid)
+            mycursor.execute(sql, val)
+            db.commit()
+            messagebox.showinfo("Success", "Food establishment has been edited successfully!")
+            new_window.destroy()
+
+
+            
+         print('here')
+         edit1 = tk.Toplevel(main_window)
+         edit1.geometry("700x300")
+         edit1.title("Edit food establishment")
+         labels = ['Enter business id:', 'Enter new business name:', 'Enter new business address:']
+         for i in range(3):
+            tk.Label(edit1, text=labels[i]).grid(row=i, column=0, padx=10, pady=10)
+      
+         editbusinessid = tk.Entry(edit1, width=40, font=('Arial', 14))
+         editbusinessid.grid(row=0, column=1, columnspan=2)
+
+    
+         editbusinessname = tk.Entry(edit1, width=40, font=('Arial', 14))
+         editbusinessname.grid(row=1, column=1, columnspan=2)
+
+        
+        # select * from FOOD ESTABLISHMENT where business id = %s
+         editbusinessaddress = tk.Entry(edit1, width=40, font=('Arial', 14))
+         editbusinessaddress.grid(row=2, column=1, columnspan=2)
+         
+         submit = tk.Button(edit1, text='Submit', command=edit_submit_data)
+         submit.grid(row=3, column=1)  
+
+
+
+      def submit_data():    
           business_id = businessid.get()
           business_name = businessname.get()
           business_address = address.get()
@@ -46,7 +89,7 @@ def mainpage():
           new_window.destroy()
         
       new_window = tk.Toplevel(main_window)
-      new_window.geometry("400x300")
+      new_window.geometry("700x300")
       new_window.title("Add food establishment")
       
       labels = ['Business id:', 'Business name:', 'Address:']
@@ -63,7 +106,14 @@ def mainpage():
       address.grid(row=2, column=1, columnspan=2)
 
       submit = tk.Button(new_window, text='Submit Now', command=submit_data)
-      submit.grid(row=3, column=2)  
+      submit.grid(row=3, column=1)  
+# add implementation for edit button
+      edit = tk.Button(new_window, text='Edit', command=edit_foodestablishment)
+      edit.grid(row=3, column=2)  
+
+# add implementation for delete button
+      delete = tk.Button(new_window, text='Delete')
+      delete.grid(row=3, column=3)  
 
     AddFoodEstablishment = tk.Button(main_window, text='Add a new food establishment', command=add_foodestablishment)
     AddFoodEstablishment.pack(pady=20)
@@ -87,7 +137,7 @@ def mainpage():
           messagebox.showinfo("Success", "Food item has been recorded successfully!")
           fooditem.destroy()
       fooditem = tk.Toplevel(main_window)
-      fooditem.geometry("400x300")
+      fooditem.geometry("700x300")
       fooditem.title("Add new food item")
       
       labels = ['Food id:', 'Food name:', 'Price:','Type of food:', 'Description','Business id:']
@@ -113,14 +163,30 @@ def mainpage():
       businessid.grid(row=5, column=1, columnspan=2)
 
       submit = tk.Button(fooditem, text='Submit Now', command=submit_data)
-      submit.grid(row=7, column=2)  
+      submit.grid(row=7, column=1)  
 
 
 
     AddFoodItem = tk.Button(main_window, text='Add a new food item', command=add_fooditem)
     AddFoodItem.pack(pady=20)
 
+    def viewFoodReviews():
+          allFoodReviews = tk.Toplevel(main_window)
+          allFoodReviews.geometry("700x700")
+          allFoodReviews.title("Food reviews")
 
+          
+          sql = "SELECT * FROM REVIEW"
+          mycursor.execute(sql)
+          reviews = mycursor.fetchall()
+          for i, review in enumerate(reviews):
+                for j, value in enumerate(review):
+                    tk.Label(allFoodReviews, text=value).grid(row=i, column=j, padx=10, pady=10) 
+                    tk.Button(allFoodReviews, text='Edit').grid(row=i, column=9)
+
+              
+       
+       
     def add_foodreview():
       def submit_data():
           review_no = reviewno.get()
@@ -140,7 +206,7 @@ def mainpage():
           messagebox.showinfo("Success", "Review has been recorded successfully!")
           foodreview.destroy()
       foodreview = tk.Toplevel(main_window)
-      foodreview.geometry("400x300")
+      foodreview.geometry("700x300")
       foodreview.title("Add new food item")
       
       labels = ['Review no:', 'Description:', 'Rating:','Business id:','Food id:','User id:']
@@ -162,57 +228,27 @@ def mainpage():
       foodid = tk.Entry(foodreview, width=40, font=('Arial', 14))
       foodid.grid(row=4, column=1, columnspan=2)
 
-      # if nakologged in then user id input is not necessary
       userid = tk.Entry(foodreview, width=40, font=('Arial', 14))
       userid.grid(row=5, column=1, columnspan=2)
       submit = tk.Button(foodreview, text='Submit Now', command=submit_data)
-      submit.grid(row=6, column=2)  
+      submit.grid(row=6, column=1)  
 
 
 
     AddReview = tk.Button(main_window, text='Add a new food review', command=add_foodreview)
     AddReview.pack(pady=20)
 
-
-
-def login_validation():
-    print('here')
-   
-    userid = username_entry.get()
-    password = password_entry.get()
-
-    sql = "SELECT password FROM user WHERE User_id = %s and Password = %s"
-    val = (userid,password)
-    mycursor.execute(sql, val)
-    result = mycursor.fetchone()
-    
-    # If the user exists and the password matches, show a success message
-    if result and result[0] == password:
-        messagebox.showinfo("Login Successful", "Welcome, " + userid + "!")
-        mainpage()
-    else:
-        messagebox.showerror("Login Failed", "Invalid username or password")
-
-# user log in apge
-username_label = tk.Label(root, text="Userid:")
-username_label.pack()
-
-username_entry = tk.Entry(root)
-username_entry.pack()
-
-password_label = tk.Label(root, text="Password:")
-password_label.pack()
-
-password_entry = tk.Entry(root, show="*")  # Show asterisks for password
-password_entry.pack()
-
-login_button = tk.Button(root, text="Login", command=login_validation)
-login_button.pack(pady=20)
+    # view all food reviews
+    viewAllFoodReviews = tk.Button(main_window, text='View all food reviews', command=viewFoodReviews)
+    viewAllFoodReviews.pack(pady=20)
 
 
 
 
 
+
+
+mainpage()
 
 
 
