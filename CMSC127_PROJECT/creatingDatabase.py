@@ -142,9 +142,9 @@ mycursor = db.cursor()
 # """)
 
 # ADDS CONSTRAINT IN ESTABLISHMENT REVIEW TABLE
-mycursor.execute("""
-    ALTER TABLE ESTABLISHMENTREVIEW 
-    ADD CONSTRAINT ESTABLISHMENTREVIEW_User_id_fk
-    FOREIGN KEY (User_id) 
-    REFERENCES USER(User_id)
-""")
+# mycursor.execute("""
+#     ALTER TABLE ESTABLISHMENTREVIEW 
+#     ADD CONSTRAINT ESTABLISHMENTREVIEW_User_id_fk
+#     FOREIGN KEY (User_id) 
+#     REFERENCES USER(User_id)
+# """)

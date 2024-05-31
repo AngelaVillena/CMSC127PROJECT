@@ -214,7 +214,18 @@ def mainpage():
                     tk.Label(allFoodReviews, text=value).grid(row=i, column=j, padx=10, pady=10) 
                     tk.Button(allFoodReviews, text='Edit').grid(row=i, column=9)
 
-              
+    def viewFoodEstablishments():
+        allFoodEstablishments = tk.Toplevel(main_window)
+        allFoodEstablishments.geometry("700x700")
+        allFoodEstablishments.title("Food Establishments")
+
+        sql = "SELECT * FROM FOOD_ESTABLISHMENT"
+        mycursor.execute(sql)
+        establishments = mycursor.fetchall()
+        for i, establishment in enumerate(establishments):
+            for j, value in enumerate(establishment):
+                tk.Label(allFoodEstablishments, text=value).grid(row=i, column=j, padx=10, pady=10) 
+                tk.Button(allFoodEstablishments, text='Edit').grid(row=i, column=9)
        
        
     def add_foodreview():
@@ -270,6 +281,10 @@ def mainpage():
 
     # view all food reviews
     viewAllFoodReviews = tk.Button(main_window, text='View all food reviews', command=viewFoodReviews)
+    viewAllFoodReviews.pack(pady=20)
+
+    # view all food establishments
+    viewAllFoodReviews = tk.Button(main_window, text='View all food establishments', command=viewFoodEstablishments)
     viewAllFoodReviews.pack(pady=20)
 
 
