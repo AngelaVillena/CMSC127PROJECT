@@ -3,7 +3,7 @@ import mysql.connector
 db =  mysql.connector.connect(
   host  = "localhost",
   user= "root",
-  password="hershey",
+  password="angel",
   database = "finalproject"
 )
 
@@ -142,9 +142,11 @@ mycursor = db.cursor()
 # """)
 
 # ADDS CONSTRAINT IN ESTABLISHMENT REVIEW TABLE
-mycursor.execute("""
-    ALTER TABLE ESTABLISHMENTREVIEW 
-    ADD CONSTRAINT ESTABLISHMENTREVIEW_User_id_fk
-    FOREIGN KEY (User_id) 
-    REFERENCES USER(User_id)
-""")
+# mycursor.execute("""
+#     ALTER TABLE ESTABLISHMENTREVIEW 
+#     ADD CONSTRAINT ESTABLISHMENTREVIEW_User_id_fk
+#     FOREIGN KEY (User_id) 
+#     REFERENCES USER(User_id)
+# """)
+
+#  alter table review change column `Review_no` `Review_num` int(5) PRIMARY KEY AUTO_INCREMENT;
