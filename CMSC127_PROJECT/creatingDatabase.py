@@ -3,7 +3,7 @@ import mysql.connector
 db =  mysql.connector.connect(
   host  = "localhost",
   user= "root",
-  password="angel",
+  password="hershey",
   database = "finalproject"
 )
 
@@ -13,47 +13,27 @@ mycursor = db.cursor()
 # CREAETES DATABSE
 # mycursor.execute("CREATE DATABASE finalproject")
 
+# CREATES FOOD_ESTABLISHMENT TABLE
+# mycursor.execute("""
+# CREATE TABLE FOOD_ESTABLISHMENT (
+#     Business_id INT(5) PRIMARY KEY ,
+#     Name VARCHAR(50) NOT NULL,
+#     Address VARCHAR(50) NOT NULL
+# )
+# """)
 
 # CREATES FOODITEM TABLE
 # mycursor.execute("""
 #     CREATE TABLE FOOD_ITEM (
 #         Food_id INT(5) PRIMARY KEY,
 #         Name VARCHAR(20) NOT NULL,
-#         Price DECIMAL(4,2) NOT NULL,
+#         Price NUMERIC(4,2) NOT NULL,
 #         Type_of_food VARCHAR(20),
 #         Description VARCHAR(50),
-#         Business_id INT(5)
+#         Business_id INT(5),
+#         CONSTRAINT FOOD_ITEM_Business_id_fk FOREIGN KEY(Business_id) REFERENCES FOOD_ESTABLISHMENT(Business_id)
 #     )
 # """)
-
-# CREATES FOOD_ESTABLISHMENT TABLE
-# mycursor.execute("""
-# CREATE TABLE FOOD_ESTABLISHMENT (
-#     Business_id INT(5) PRIMARY KEY ,
-#     Name VARCHAR(50) NOT NULL,
-#     Address VARCHAR(50) NOT NULL,
-#     Food_id INT(5)
-# )
-# """)
-
-
-
-# ADDS CONSTRAINT IN FOOITEM TABLE
-# mycursor.execute("""
-#     ALTER TABLE FOOD_ITEM 
-#     ADD CONSTRAINT FOOD_ITEM_Business_id_fk 
-#     FOREIGN KEY (Business_id) 
-#     REFERENCES FOOD_ESTABLISHMENT(Business_id)
-# """)
-
-# ADDS CONSTRAINT IN FOODESTABLISHMENT TABLE
-# mycursor.execute("""
-#     ALTER TABLE FOOD_ESTABLISHMENT 
-#     ADD CONSTRAINT FOOD_ESTABLISHMENT_Food_id_fk
-#     FOREIGN KEY (Food_id) 
-#     REFERENCES FOOD_ITEM(Food_id)
-# """)
-
 
 # CREATES REVIEW TABLE
 # mycursor.execute("""
@@ -63,7 +43,7 @@ mycursor = db.cursor()
 #     Rating decimal(3,2),
 #     Time TIME,
 #     Date DATE,
-#      Business_id INT(5),   
+#     Business_id INT(5),   
 #     Food_id INT(5),
 #     CONSTRAINT REVIEW_Business_id_fk FOREIGN KEY(Business_id) REFERENCES FOOD_ESTABLISHMENT(Business_id),
 #     CONSTRAINT REVIEW_Food_id_fk FOREIGN KEY(Food_id) REFERENCES FOOD_ITEM(Food_id)
@@ -78,7 +58,7 @@ mycursor = db.cursor()
 #     Age INT(2),
 #     Password VARCHAR(50) NOT NULL,
 #     Username VARCHAR(50) NOT NULL
-# )
+# );
 # """)
 
 # ADD USER ID FOR FOREIGN KEY IN REVIEW TABLE
@@ -105,7 +85,6 @@ mycursor = db.cursor()
 
 #  CONSTRAINT REVIEW_User_id_fk FOREIGN KEY User_id REFERENCES USER(User_id),
 
-
 # CREATE ANOTHER TABLE FOR FOOD TYPE
 # mycursor.execute("""
 #     CREATE TABLE FOOD_TYPE
@@ -124,29 +103,17 @@ mycursor = db.cursor()
 
 # CREATES ESTABLISHMENT REVIEW TABLE
 # mycursor.execute("""
-# CREATE TABLE ESTABLISHMENTREVIEW (
+# CREATE TABLE ESTABLISHMENT_REVIEW (
 #     Review_no INT(5) PRIMARY KEY , 
 #     Description VARCHAR(50),
 #     Rating decimal(3,2),
 #     Time TIME,
 #     Date DATE,
 #     Business_id INT(5),   
-#     CONSTRAINT ESTABLISHMENTREVIEW_Business_id_fk FOREIGN KEY(Business_id) REFERENCES FOOD_ESTABLISHMENT(Business_id)
+#     User_id INT(10),
+#     CONSTRAINT ESTABLISHMENT_REVIEW_Business_id_fk FOREIGN KEY(Business_id) REFERENCES FOOD_ESTABLISHMENT(Business_id),
+#     CONSTRAINT ESTABLISHMENT_REVIEW_User_id_fk FOREIGN KEY (User_id) REFERENCES USER(User_id)
 # );
-# """)
-
-# ADD USER ID FOR FOREIGN KEY IN ESTABLISHMENT REVIEW TABLE
-# mycursor.execute("""
-# ALTER TABLE ESTABLISHMENTREVIEW 
-# ADD COLUMN User_id INT(10)
-# """)
-
-# ADDS CONSTRAINT IN ESTABLISHMENT REVIEW TABLE
-# mycursor.execute("""
-#     ALTER TABLE ESTABLISHMENTREVIEW 
-#     ADD CONSTRAINT ESTABLISHMENTREVIEW_User_id_fk
-#     FOREIGN KEY (User_id) 
-#     REFERENCES USER(User_id)
 # """)
 
 #  alter table review change column `Review_no` `Review_num` int(5) AUTO_INCREMENT;
