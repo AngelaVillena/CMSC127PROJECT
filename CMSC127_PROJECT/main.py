@@ -308,8 +308,6 @@ def mainpage():
         viewAllFoodReviewsbutton.grid(row=numofrows+2, column=1,pady=10)
         
    
-
-
     def viewFoodEstablishments(tab2, establishments):
         def searchestablishments(search_entry, establishments, tab2):
             search_query = search_entry.get()
@@ -394,27 +392,24 @@ def mainpage():
             submit.grid(row=3, column=1)  
 
         def viewFoodItems(items, row, col):
-    
+
             def search_items():
                 search_query = search_entry.get().lower()
                 filtered_items = [item for item in items if search_query in item[1].lower()]
                 display_food_items(filtered_items)
 
-            def filter_by_date():
-                month = month_entry.get().strip()
-                day = day_entry.get().strip()
-                year = year_entry.get().strip()
+
+            def filter_by_price_range():
+                min_price = min_price_entry.get().strip()
+                max_price = max_price_entry.get().strip()
 
                 filtered_items = items
 
-                if year:
-                    filtered_items = [item for item in filtered_items if item[3].year == int(year)]  # Assuming date is in the 4th column and is a datetime object
+                if min_price:
+                    filtered_items = [item for item in filtered_items if float(item[2]) >= float(min_price)]
 
-                if month:
-                    filtered_items = [item for item in filtered_items if item[3].month == int(month)]
-
-                if day:
-                    filtered_items = [item for item in filtered_items if item[3].day == int(day)]
+                if max_price:
+                    filtered_items = [item for item in filtered_items if float(item[2]) <= float(max_price)]
 
                 display_food_items(filtered_items)
 
@@ -422,7 +417,6 @@ def mainpage():
                 for label in food_items_frame.grid_slaves():
                     label.grid_forget()
 
-                num_of_rows = len(items)
                 for i, item in enumerate(items):
                     for j, value in enumerate(item):
                         item_label = tk.Label(food_items_frame, text=value)
@@ -432,6 +426,25 @@ def mainpage():
             allFoodItems.geometry("700x700")
             allFoodItems.title("Food Items")
 
+            # Button to add a new food item
+            AddFoodItem = tk.Button(allFoodItems, text='Add a new food item', command=add_fooditem)
+            AddFoodItem.pack(pady=5)
+
+            # Sort by price button
+            tk.Button(allFoodItems, text='Sort by Price', command=lambda: viewByPrice(businessid)).pack(pady=5)
+
+            # Food type label and combobox
+            tk.Label(allFoodItems, text="Filter by Food Type: ").pack(pady=5)
+            var = tk.StringVar()
+            typeoffood = ttk.Combobox(allFoodItems, textvariable=var)
+            typeoffood['values'] = ["Appetizer", "Entree/ Main Dish", "Sides", "Dessert"]
+            typeoffood['state'] = 'readonly'
+            typeoffood.pack()
+
+            # OK button for applying food type filter
+            tk.Button(allFoodItems, text='Apply Filter', command=lambda: viewByType(businessid)).pack(pady=5)
+
+            # Search frame
             search_frame = tk.Frame(allFoodItems)
             search_frame.pack(pady=10)
 
@@ -441,47 +454,32 @@ def mainpage():
             search_button = tk.Button(search_frame, text="Search", command=search_items)
             search_button.pack(side=tk.LEFT)
 
-            date_filter_frame = tk.Frame(allFoodItems)
-            date_filter_frame.pack(pady=10)
 
-            tk.Label(date_filter_frame, text="Month:").pack(side=tk.LEFT, padx=5)
-            month_entry = tk.Entry(date_filter_frame, width=5)
-            month_entry.pack(side=tk.LEFT)
+            # Price range filter frame
+            price_range_frame = tk.Frame(allFoodItems)
+            price_range_frame.pack(pady=10)
 
-            tk.Label(date_filter_frame, text="Day:").pack(side=tk.LEFT, padx=5)
-            day_entry = tk.Entry(date_filter_frame, width=5)
-            day_entry.pack(side=tk.LEFT)
+            tk.Label(price_range_frame, text="Min Price:").pack(side=tk.LEFT, padx=5)
+            min_price_entry = tk.Entry(price_range_frame, width=8)
+            min_price_entry.pack(side=tk.LEFT)
 
-            tk.Label(date_filter_frame, text="Year:").pack(side=tk.LEFT, padx=5)
-            year_entry = tk.Entry(date_filter_frame, width=5)
-            year_entry.pack(side=tk.LEFT)
+            tk.Label(price_range_frame, text="Max Price:").pack(side=tk.LEFT, padx=5)
+            max_price_entry = tk.Entry(price_range_frame, width=8)
+            max_price_entry.pack(side=tk.LEFT)
 
-            filter_date_button = tk.Button(date_filter_frame, text="Filter by Date", command=filter_by_date)
-            filter_date_button.pack(side=tk.LEFT, padx=5)
+            filter_price_button = tk.Button(price_range_frame, text="Filter by Price Range", command=filter_by_price_range)
+            filter_price_button.pack(side=tk.LEFT, padx=5)
 
+            # Frame for displaying food items
             food_items_frame = tk.Frame(allFoodItems)
             food_items_frame.pack(pady=10)
 
+            # Initial display of food items
             display_food_items(items)
 
-            AddFoodItem = tk.Button(allFoodItems, text='Add a new food item', command=add_fooditem)
-            AddFoodItem.pack(pady=10)
-
-            tk.Button(allFoodItems, text='Sort by Price', command=lambda: viewByPrice(businessid)).pack(pady=5)
-
-            tk.Label(allFoodItems, text="Filter by Food Type: ").pack(pady=5)
-            var = tk.StringVar()
-            typeoffood = ttk.Combobox(allFoodItems, textvariable=var)
-            typeoffood['values'] = ["Appetizer", "Entree/ Main Dish", "Sides", "Dessert"]
-            typeoffood['state'] = 'readonly'
-            typeoffood.pack()
-
-            tk.Button(allFoodItems, text='Apply Filter', command=lambda: viewByType(businessid)).pack(pady=5)
-
             def viewByType(businessid):
-                for label in allFoodItems.grid_slaves():
-                    if int(label.grid_info()["row"]) > 0:
-                        label.grid_forget()
+                for label in food_items_frame.grid_slaves():
+                    label.grid_forget()
 
                 sql = "SELECT * FROM food_item WHERE Business_id = " + str(businessid) + " AND Type_of_food = '%s'" % str(var.get())
                 mycursor.execute(sql)
@@ -489,9 +487,8 @@ def mainpage():
                 display_food_items(items)
 
             def viewByPrice(businessid):
-                for label in allFoodItems.grid_slaves():
-                    if int(label.grid_info()["row"]) > 0:
-                        label.grid_forget()
+                for label in food_items_frame.grid_slaves():
+                    label.grid_forget()
 
                 sql = "SELECT * FROM food_item WHERE Business_id = " + str(businessid) + " ORDER BY Price"
                 mycursor.execute(sql)
@@ -516,7 +513,9 @@ def mainpage():
             typeoffood['state'] = 'readonly'
             typeoffood.grid(row=0, column=3, columnspan=2)
 
-            tk.Button(allFoodItems, text='OK', command=lambda: viewByType(businessid)).grid(row=0, column=5, padx=5, pady=5)
+            tk.Button(allFoodItems, text='OK', command=lambda: viewByType(businessid)).grid
+
+
 
         def viewEstablishmentReviews(items, row, col):
             def delete_foodestablishmentreview(reviews, row, column):
