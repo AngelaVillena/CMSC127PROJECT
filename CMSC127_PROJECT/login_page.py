@@ -7,7 +7,7 @@ import sign_up
 db = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="angel",
+    password="hershey",
     database="finalproject"
 )
 
@@ -18,13 +18,15 @@ def login_page(mainpage):
       username = username_entry.get()
       password = password_entry.get()
 
-      mycursor.execute("SELECT * FROM user WHERE Username = %s AND Password = %s", (username, password))
+      mycursor.execute("SELECT * FROM user WHERE Username = %s AND Password = password(%s)", (username, password))
 
       result = mycursor.fetchone()
+      
       if result:
+          userid = result[0]
           messagebox.showinfo("Login Successful", "Welcome, %s!" % username)
           parent.destroy()
-          mainpage()
+          mainpage(userid)
       else:
           messagebox.showerror("Login Failed", "Invalid username or password")
     
@@ -38,17 +40,16 @@ def login_page(mainpage):
   username_entry = tk.Entry(parent)
   username_entry.pack()
 
-
   password_label = tk.Label(parent, text="Password:")
   password_label.pack()
 
   password_entry = tk.Entry(parent, show="*") 
   password_entry.pack()
-
+  
   login_button = tk.Button(parent, text="Login", command=validate_login)
-  login_button.pack()
+  login_button.pack(side = 'left', expand=1, anchor='ne')
 
   signup_button = tk.Button(parent, text="Signup", command= lambda: sign_up.signup_page(login_page))
-  signup_button.pack()
+  signup_button.pack(side = 'left', expand=1, anchor='nw')
 
   parent.mainloop()

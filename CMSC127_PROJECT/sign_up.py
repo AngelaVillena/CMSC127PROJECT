@@ -1,68 +1,72 @@
 import tkinter as tk
 from tkinter import Label, messagebox, ttk
 
-
 import mysql.connector
 
 db = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="angel",
+    password="hershey",
     database="finalproject"
 )
 
 mycursor = db.cursor()
 def signup_page(loginpage):
 
-  def validate_login():
+  def validate_signup():
       username = username_entry.get()
       password = password_entry.get()
+      name = name_entry.get()
+      age = age_entry.get()
+      role = role_label_entry.get()
 
-    #   mycursor.execute("SELECT * FROM user WHERE Username = %s AND Password = PASSWORD(%s)", (username, password))
-
-    #   result = mycursor.fetchone()
-    #   if result:
-    #       messagebox.showinfo("Login Successful", "Welcome, %s!" % username)
-    #       parent.destroy()
-    #       mainpage()
-    #   else:
-    #       messagebox.showerror("Login Failed", "Invalid username or password")
+      if len(username) == 0 or len(password) == 0 or len(name) == 0 or len(age) == 0 or len(role) == 0:
+        messagebox.showerror("Sign Up Invalid", "Please fill up all the fields")
+      else:
+        sql = "INSERT INTO USER(Name, Age, Password, Username, Role) values(%s, %s, password(%s), %s, %s)"
+        val = (name, age, password, username, role)
+        mycursor.execute(sql, val)
+        db.commit()
+        messagebox.showinfo("Success!", "Sign Up Successful!")
+        print("successfully added")
+        signup.destroy()
+        loginpage()
   
-  parent = tk.Tk()
-  parent.title("Signup Form")
-  parent.geometry("700x300")
-
-  var = tk.StringVar()
-  typeofcustomer = ttk.Combobox(parent, state="readonly", values=["Customer", "Owner"], textvariable=var)
+  signup = tk.Tk()
+  signup.title("Signup Form")
+  signup.geometry("700x300")
   
-  name_label = tk.Label(parent, text="Name:")
+  name_label = tk.Label(signup, text="Name:")
   name_label.pack()
 
-  name_entry = tk.Entry(parent)
+  name_entry = tk.Entry(signup)
   name_entry.pack()
 
-  age_label = tk.Label(parent, text="Age:")
+  age_label = tk.Label(signup, text="Age:")
   age_label.pack()
 
-#   typeofcustomer.grid(row=0, column=3, columnspan=2)
+  age_entry = tk.Entry(signup)
+  age_entry.pack()
 
-  username_entry = tk.Entry(parent)
-  username_entry.pack()
+  role_label = tk.Label(signup, text="Role:")
+  role_label.pack()
 
-  username_label = tk.Label(parent, text="Username:")
+  role_label_entry = ttk.Combobox(signup, state="readonly", values=["Customer", "Owner"])
+  role_label_entry.pack()
+
+  username_label = tk.Label(signup, text="Username:")
   username_label.pack()
 
-  username_entry = tk.Entry(parent)
+  username_entry = tk.Entry(signup)
   username_entry.pack()
 
-  password_label = tk.Label(parent, text="Password:")
+  password_label = tk.Label(signup, text="Password:")
   password_label.pack()
 
-  password_entry = tk.Entry(parent, show="*") 
+  password_entry = tk.Entry(signup, show="*") 
   password_entry.pack()
 
-
-  login_button = tk.Button(parent, text="Login", command=validate_login)
+  login_button = tk.Button(signup, text="Sign Up", command= validate_signup)
   login_button.pack()
 
   # parent.mainloop()
