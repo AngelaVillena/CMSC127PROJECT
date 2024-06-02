@@ -20,11 +20,11 @@ CREATE TABLE user (
  );
 
 INSERT INTO user (Name, Age, Password, Username, Role) VALUES 
-('Alice Smith', 28, PASSWORD('alice_password'), 'alice', 'admin'),
-('Bob Johnson', 35, PASSWORD('bob_password'), 'bob', 'user'),
-('Charlie Brown', 22, PASSWORD('charlie_password'), 'charlie', 'user'),
-('Diana Prince', 30, PASSWORD('diana_password'), 'diana', 'moderator'),
-('Eve Adams', 26, PASSWORD('eve_password'), 'eve', 'user');
+('Ted Mosby', 28, PASSWORD('password'), 'Ted', 'admin'),
+('Lily Aldrin', 35, PASSWORD('password'), 'Lily', 'user'),
+('Rachel Greep', 22, PASSWORD('password'), 'Rachel', 'user'),
+('Regina Phalange', 30, PASSWORD('password'), 'Phoebe', 'moderator'),
+('Ken Adams', 26, PASSWORD('password'), 'Joey', 'user');
 
 
 CREATE TABLE food_establishment (
@@ -68,14 +68,17 @@ CREATE TABLE establishment_review (
      CONSTRAINT ESTABLISHMENT_REVIEW_User_id_fk FOREIGN KEY (User_id) REFERENCES USER(User_id)
  );
 INSERT INTO FOOD_ESTABLISHMENT (Name, Address) VALUES 
-('Joe\'s Diner', '123 Main St, '),
-('Pasta Palace', '456 Elm St,'),
-('Burger Barn', '789 Oak St,');
+('Joe\'s Inasal', 'Los Banos Laguna '),
+('La creperie', 'Quezon City'),
+('Elephant Grounds', 'Manila');
 
 INSERT INTO food_item (Name, Price, Type_of_food, Description, Business_id) VALUES
-('Cheeseburger', 8.99, 'Fast Food', 'A delicious cheeseburger with all the fixings', 3),
-('Spaghetti', 12.50, 'Italian', 'Classic spaghetti with marinara sauce', 2),
-('Pancakes', 5.99, 'Breakfast', 'Fluffy pancakes with syrup', 1);
+('Thai Shrimp Salad', 25, 'Appetizer', 'A delicious cheeseburger with all the fixings', 3),
+('Spaghetti', 12.50, 'Entree/ Main Dish', 'Classic spaghetti with marinara sauce', 2),
+('Fries', 5.99, 'Sides', 'Fluffy pancakes with syrup', 1),
+('Cheesecake', 5.99, 'Dessert', 'Delicious cheesecake', 1),
+('Cheeseburger na walang cheese', 5.99, 'Appetizer', 'Delicious cheesecake', 1);
+
 
 
 INSERT INTO REVIEW (Review_no, Description, Rating, Time, Date, Business_id, Food_id, User_id) VALUES
