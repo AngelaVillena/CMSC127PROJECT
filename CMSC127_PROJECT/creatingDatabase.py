@@ -24,14 +24,14 @@ mycursor = db.cursor()
 
 # CREATES FOODITEM TABLE
 # mycursor.execute("""
-#     CREATE TABLE FOOD_ITEM (
+#     CREATE OR REPLACE TABLE FOOD_ITEM (
 #         Food_id INT(5) PRIMARY KEY,
 #         Name VARCHAR(20) NOT NULL,
 #         Price NUMERIC(4,2) NOT NULL,
 #         Type_of_food VARCHAR(20),
 #         Description VARCHAR(50),
 #         Business_id INT(5),
-#         CONSTRAINT FOOD_ITEM_Business_id_fk FOREIGN KEY(Business_id) REFERENCES FOOD_ESTABLISHMENT(Business_id)
+#         CONSTRAINT FOOD_ITEM_Business_id_fk FOREIGN KEY(Business_id) REFERENCES FOOD_ESTABLISHMENT(Business_id) on delete cascade
 #     )
 # """)
 
@@ -45,7 +45,7 @@ mycursor = db.cursor()
 #     Date DATE,
 #     Business_id INT(5),   
 #     Food_id INT(5),
-#     CONSTRAINT REVIEW_Business_id_fk FOREIGN KEY(Business_id) REFERENCES FOOD_ESTABLISHMENT(Business_id),
+#     CONSTRAINT REVIEW_Business_id_fk FOREIGN KEY(Business_id) REFERENCES FOOD_ESTABLISHMENT(Business_id) on delete cascade,
 #     CONSTRAINT REVIEW_Food_id_fk FOREIGN KEY(Food_id) REFERENCES FOOD_ITEM(Food_id)
 # );
 # """)
@@ -111,7 +111,7 @@ mycursor = db.cursor()
 #     Date DATE,
 #     Business_id INT(5),   
 #     User_id INT(10),
-#     CONSTRAINT ESTABLISHMENT_REVIEW_Business_id_fk FOREIGN KEY(Business_id) REFERENCES FOOD_ESTABLISHMENT(Business_id),
+#     CONSTRAINT ESTABLISHMENT_REVIEW_Business_id_fk FOREIGN KEY(Business_id) REFERENCES FOOD_ESTABLISHMENT(Business_id) on delete cascade,
 #     CONSTRAINT ESTABLISHMENT_REVIEW_User_id_fk FOREIGN KEY (User_id) REFERENCES USER(User_id)
 # );
 # """)

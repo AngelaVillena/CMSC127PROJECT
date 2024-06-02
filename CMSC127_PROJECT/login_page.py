@@ -3,11 +3,12 @@ from tkinter import messagebox
 
 
 import mysql.connector
+import sign_up
 
 db = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="angel",
+    password="hershey",
     database="finalproject"
 )
 
@@ -15,23 +16,23 @@ mycursor = db.cursor()
 def login_page(mainpage):
 
   def validate_login():
-      name = username_entry.get()
+      username = username_entry.get()
       password = password_entry.get()
 
-      mycursor.execute("SELECT * FROM user WHERE Name = %s AND Password = %s", (name, password))
+      mycursor.execute("SELECT * FROM user WHERE Username = %s AND Password = PASSWORD(%s)", (username, password))
 
       result = mycursor.fetchone()
       if result:
-          messagebox.showinfo("Login Successful", f"Welcome, {name}!")
+          messagebox.showinfo("Login Successful", "Welcome, %s!" % username)
+          parent.destroy()
+          mainpage()
       else:
           messagebox.showerror("Login Failed", "Invalid username or password")
-      parent.destroy()
-      mainpage()
     
  
   parent = tk.Tk()
   parent.title("Login Form")
-  parent.geometry("300x200")
+  parent.geometry("700x300")
   username_label = tk.Label(parent, text="Username:")
   username_label.pack()
 
@@ -45,8 +46,10 @@ def login_page(mainpage):
   password_entry = tk.Entry(parent, show="*") 
   password_entry.pack()
 
-
   login_button = tk.Button(parent, text="Login", command=validate_login)
   login_button.pack()
+
+  signup_button = tk.Button(parent, text="Signup", command= lambda: sign_up.signup_page(login_page))
+  signup_button.pack()
 
   parent.mainloop()

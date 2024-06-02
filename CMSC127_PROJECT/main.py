@@ -9,7 +9,7 @@ import login_page
 db = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="angel",
+    password="hershey",
     database="finalproject"
 )
 
@@ -64,9 +64,6 @@ def mainpage():
       typeoffood_list = ttk.Combobox(fooditem,state="readonly",
         values=["Appetizer", "Entree/ Main Dish", "Sides", "Dessert"]
       )
-
-      
-   
       
       labels = ['Food name:', 'Price:','Type of food:', 'Description','Business id:']
       for i in range(5):
@@ -232,9 +229,7 @@ def mainpage():
             description.grid(row=2, column=1, columnspan=2)
 
             food_rating = tk.Scale(edit1, from_=0, to=10, orient="horizontal", length=200)
-            food_rating.grid(row=3, column=1, columnspan=2)
-
-         
+            food_rating.grid(row=3, column=1, columnspan=2) 
 
             userid = tk.Entry(edit1, width=40, font=('Arial', 14))
             userid.grid(row=4, column=1, columnspan=2)
@@ -545,8 +540,8 @@ def mainpage():
 
 
 
-# login_page.login_page(mainpage)
-mainpage()
+login_page.login_page(mainpage)
+# mainpage()
 
 
 
