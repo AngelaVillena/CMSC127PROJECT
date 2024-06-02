@@ -61,6 +61,16 @@ mycursor = db.cursor()
 # );
 # """)
 
+# mycursor.execute("DROP TABLE IF EXISTS `USER`")
+# mycursor.execute("""CREATE TABLE USER (
+#     User_id INT(10) PRIMARY KEY,
+#     Name VARCHAR(50) NOT NULL,
+#     Age INT(2),
+#     Password VARCHAR(50) NOT NULL,
+#     Username VARCHAR(50) NOT NULL
+# )""")
+
+
 # ADD USER ID FOR FOREIGN KEY IN REVIEW TABLE
 # mycursor.execute("""
 # ALTER TABLE REVIEW 

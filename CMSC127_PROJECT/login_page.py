@@ -1,14 +1,13 @@
 import tkinter as tk
 from tkinter import messagebox
 
-
 import mysql.connector
 import sign_up
 
 db = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="hershey",
+    password="angel",
     database="finalproject"
 )
 
@@ -19,7 +18,7 @@ def login_page(mainpage):
       username = username_entry.get()
       password = password_entry.get()
 
-      mycursor.execute("SELECT * FROM user WHERE Username = %s AND Password = PASSWORD(%s)", (username, password))
+      mycursor.execute("SELECT * FROM user WHERE Username = %s AND Password = %s", (username, password))
 
       result = mycursor.fetchone()
       if result:

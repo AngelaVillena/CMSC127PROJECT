@@ -2,14 +2,13 @@ import tkinter as tk
 from functools import partial
 from tkinter import Label, messagebox, ttk
 
-import mysql.connector
-
 import login_page
+import mysql.connector
 
 db = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="hershey",
+    password="angel",
     database="finalproject"
 )
 
@@ -37,8 +36,59 @@ def mainpage():
 
 
     tabControl.pack(expand=1, fill="both")
+    def deletefooditem(items, row, column):
+        
+            deletefoodid = items[row][column]
+            sql = "DELETE FROM Food_item WHERE Food_id = %s"
+            mycursor.execute(sql, (deletefoodid,))
+            db.commit()
+            messagebox.showinfo("Success", "Food item has been DELETED!")
+            
+    def editfooditem(items, row, column):
+        def submit_data():
+            foodid = items[row][column]
+           
+            food_name = foodname.get()
+            food_price = price.get()
+            type_of_food = typeoffood_list.get()
+            food_description = description.get()
+            food_businessid =items[row][5]
+            
        
-   
+            sql = "UPDATE FOOD_ITEM SET Name = %s, Price = %s, Type_of_food = %s, Description = %s, Business_id = %s WHERE Food_id = %s"
+            val = ( food_name, food_price,type_of_food,food_description,food_businessid, foodid)
+            mycursor.execute(sql, val)
+            db.commit()
+            print("Record inserted successfully!")
+            messagebox.showinfo("Success", "Food item has been recorded successfully!")
+            editfooditem.destroy()
+        editfooditem = tk.Toplevel(tab2)
+        editfooditem.geometry("700x300")
+        editfooditem.title("Edit food item")
+        typeoffood_list = ttk.Combobox(editfooditem,state="readonly",
+            values=["Appetizer", "Entree/ Main Dish", "Sides", "Dessert"]
+        )
+        
+        labels = ['Food name:', 'Price:','Type of food:','Description:']
+        for i in range(4):
+            tk.Label(editfooditem, text=labels[i]).grid(row=i, column=0, padx=10, pady=10)
+        
+
+        foodname = tk.Entry(editfooditem, width=40, font=('Arial', 14))
+        foodname.grid(row=0, column=1, columnspan=2)
+
+        price = tk.Entry(editfooditem, width=40, font=('Arial', 14))
+        price.grid(row=1, column=1, columnspan=2)
+
+        typeoffood_list.grid(row=2, column=1,columnspan=2)
+
+        description = tk.Entry(editfooditem, width=40, font=('Arial', 14))
+        description.grid(row=3, column=1, columnspan=2)
+
+
+        submit = tk.Button(editfooditem, text='Submit Now', command=submit_data)
+        submit.grid(row=4, column=1)  
+
 
     def add_fooditem():
  
@@ -382,6 +432,11 @@ def mainpage():
                 for j, value in enumerate(item):
                     item1 = tk.Label(allFoodItems, text=value)
                     item1.grid(row=i+1, column=j, padx=10, pady=10)
+                    tk.Button(allFoodItems, text='Edit', command=partial(editfooditem, items, i, 0)).grid(row=i+1, column=8)
+                
+                    deletebutton = tk.Button(allFoodItems, text='Delete', bg='red', fg='white', command=partial(deletefooditem, items, i, 0))
+                    # 
+                    deletebutton.grid(row=i+1, column=9, padx=10, pady=10)
             AddFoodItem = tk.Button(allFoodItems, text='Add a new food item', command=add_fooditem)
             AddFoodItem.grid(row=numofrows+1, column=1, pady=10)
             
