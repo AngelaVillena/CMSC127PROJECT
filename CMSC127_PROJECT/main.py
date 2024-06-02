@@ -284,8 +284,6 @@ def mainpage():
             food_rating = tk.Scale(edit1, from_=0, to=10, orient="horizontal", length=200)
             food_rating.grid(row=3, column=1, columnspan=2)
 
-         
-
             userid = tk.Entry(edit1, width=40, font=('Arial', 14))
             userid.grid(row=4, column=1, columnspan=2)
 
@@ -308,11 +306,62 @@ def mainpage():
         viewAllFoodReviewsbutton.grid(row=numofrows+2, column=1,pady=10)
         
    
-    def viewFoodEstablishments(tab2, establishments):
+    def viewFoodEstablishments(tab2, establishments, min_rating=None):
         def searchestablishments(search_entry, establishments, tab2):
             search_query = search_entry.get()
             filtered_establishments = [est for est in establishments if search_query.lower() in est[1].lower()]
             viewFoodEstablishments(tab2, filtered_establishments)
+
+        def calculate_average_rating(business_id, min_rating=None):
+            sql = "SELECT AVG(Rating) FROM ESTABLISHMENT_REVIEW WHERE Business_id = %s"
+            mycursor.execute(sql, (business_id,))
+            average_rating = mycursor.fetchone()[0]
+            return average_rating if average_rating and (not min_rating or average_rating >= min_rating) else 0
+
+        for widget in tab2.winfo_children():
+            widget.destroy()
+
+        numofrows = len(establishments)
+
+        # Headers
+        headers = ['Business ID', 'Name', 'Address', 'Average Rating']
+        for i, header in enumerate(headers):
+            tk.Label(tab2, text=header).grid(row=0, column=i, padx=10, pady=10)
+
+        # Populate rows with establishment details and average ratings
+        for i, establishment in enumerate(establishments):
+            business_id = establishment[0]
+            name = establishment[1]
+            address = establishment[2]
+            avg_rating = calculate_average_rating(business_id, min_rating)
+
+            tk.Label(tab2, text=business_id).grid(row=i + 1, column=0, padx=10, pady=10)
+            tk.Label(tab2, text=name).grid(row=i + 1, column=1, padx=10, pady=10)
+            tk.Label(tab2, text=address).grid(row=i + 1, column=2, padx=10, pady=10)
+            tk.Label(tab2, text=avg_rating).grid(row=i + 1, column=3, padx=10, pady=10)
+
+    # Add a button to filter establishments by rating
+        def filterByRating(tab2, establishments):
+            rating_filter_window = tk.Toplevel(tab2)
+            rating_filter_window.geometry("300x100")
+            rating_filter_window.title("Filter by Rating")
+
+            tk.Label(rating_filter_window, text="Minimum Rating:").grid(row=0, column=0, padx=10, pady=10)
+            min_rating_entry = tk.Entry(rating_filter_window)
+            min_rating_entry.grid(row=0, column=1, padx=10, pady=10)
+
+            apply_filter_button = tk.Button(rating_filter_window, text="Apply Filter", command=lambda: applyRatingFilter(tab2, establishments, min_rating_entry))
+            apply_filter_button.grid(row=1, column=0, columnspan=2, pady=10)
+
+        # Function to apply the rating filter
+        def applyRatingFilter(tab2, establishments, min_rating_entry):
+            try:
+                min_rating = float(min_rating_entry.get())
+                filtered_establishments = [est for est in establishments if calculate_average_rating(est[0], min_rating) >= min_rating]
+                viewFoodEstablishments(tab2, filtered_establishments, min_rating)
+            except ValueError:
+                messagebox.showerror("Error", "Please enter a valid number for minimum rating.")
+
         
         def add_foodestablishment():
             def submit_data():
@@ -389,8 +438,8 @@ def mainpage():
             editbusinessaddress.grid(row=1, column=1, columnspan=2)
             
             submit = tk.Button(edit1, text='Submit', command=lambda: edit_submit_data(businessid))
-            submit.grid(row=3, column=1)  
-
+            submit.grid(row=3, column=1)
+        
         def viewFoodItems(items, row, col):
 
             def search_items():
@@ -515,12 +564,10 @@ def mainpage():
 
             tk.Button(allFoodItems, text='OK', command=lambda: viewByType(businessid)).grid
 
-
-
         def viewEstablishmentReviews(items, row, col):
             def delete_foodestablishmentreview(reviews, row, column):
                 deletereviewno = reviews[row][column]
-                sql = "DELETE FROM ESTABLISHMENTREVIEW WHERE Review_no = %s"
+                sql = "DELETE FROM ESTABLISHMENT_REVIEW WHERE Review_no = %s"
                 mycursor.execute(sql, (deletereviewno,))
                 db.commit()
                 messagebox.showinfo("Success", "Food establishment review has been DELETED!")
@@ -531,7 +578,7 @@ def mainpage():
                     newdescription = editDescription.get()
                     newrating = edit_rating.get()
 
-                    sql = "UPDATE ESTABLISHMENTREVIEW SET Description = %s, Rating = %s WHERE Review_no = %s"
+                    sql = "UPDATE ESTABLISHMENT_REVIEW SET Description = %s, Rating = %s WHERE Review_no = %s"
                     val = (newdescription, newrating, reviewno)
                     mycursor.execute(sql, val)
                     db.commit()
@@ -564,7 +611,7 @@ def mainpage():
 
                     review_userid = userid.get()
 
-                    sql = "INSERT INTO ESTABLISHMENTREVIEW (Description, Rating, Time, Date, Business_id, User_id) VALUES (%s, %s, CURTIME(), CURDATE(), %s, %s)"
+                    sql = "INSERT INTO ESTABLISHMENT_REVIEW (Description, Rating, Time, Date, Business_id, User_id) VALUES (%s, %s, CURTIME(), CURDATE(), %s, %s)"
                     val = (review_description, review_rating, businessid, review_userid)
                     mycursor.execute(sql, val)
                     db.commit()
@@ -595,7 +642,7 @@ def mainpage():
             foodReviews.title("Establishment reviews")
 
             businessid = items[row][col]
-            sql = "SELECT * FROM ESTABLISHMENTREVIEW WHERE Business_id = " + str(businessid)
+            sql = "SELECT * FROM ESTABLISHMENT_REVIEW WHERE Business_id = " + str(businessid)
             mycursor.execute(sql)
             reviews = mycursor.fetchall()
             numofrows = len(reviews)
@@ -644,11 +691,11 @@ def mainpage():
             delete_foodEstablishment = tk.Button(tab2, text='Delete', bg='red', fg='white', command=partial(delete_foodestablishment, establishments, i, 0))
             delete_foodEstablishment.grid(row=i + 1, column=12, padx=10, pady=10)
 
+            filter_by_rating_button = tk.Button(tab2, text="Filter by Rating", command=lambda: filterByRating(tab2, establishments))
+            filter_by_rating_button.grid(row=0, column=2)
+
         AddFoodEstablishment = tk.Button(tab2, text='Add a new food establishment', command=add_foodestablishment)
         AddFoodEstablishment.grid(row=numofrows + 1, column=1, pady=10)
-    
- 
-
 
     viewFoodReviews(tab1)
     sql = "SELECT * FROM FOOD_ESTABLISHMENT"
