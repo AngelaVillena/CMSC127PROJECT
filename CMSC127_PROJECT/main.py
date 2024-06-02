@@ -223,6 +223,23 @@ def mainpage():
 
             submit = tk.Button(edit1, text='Edit', command=edit_submit_data)
             submit.grid(row=2, column=1, pady=10)
+
+        def viewFoodReviewsPerEstablishment(reviews,row,col):
+            businessid = reviews[row][col]
+            edit2 = tk.Toplevel(tab1)
+            edit2.geometry("700x500")
+            sql = "SELECT * FROM REVIEW WHERE Business_id = %s"
+            val = (businessid,)
+            mycursor.execute(sql,val)
+            reviews = mycursor.fetchall()
+
+            for i, review in enumerate(reviews):
+                for j, value in enumerate(review):
+                    tk.Label(edit2, text=value).grid(row=i, column=j, padx=10, pady=10)
+                tk.Button(edit2, text='Edit', command=lambda row=i, column=0: edit_foodreview(reviews, row, column)).grid(row=i, column=9)
+                deletebutton = tk.Button(edit2, text='Delete', bg='red', fg='white', command=lambda row=i, column=0: delete_foodreview(reviews, row, column))
+                deletebutton.grid(row=i, column=10, padx=10, pady=10) 
+
         def viewAllFoodReviews():
             edit2 = tk.Toplevel(tab1)
             edit2.geometry("700x500")
@@ -298,6 +315,8 @@ def mainpage():
             tk.Label(tab1, text=establishment[1]).grid(row=i+2, column=0, padx=10, pady=10)
             add_foodreview1 = tk.Button(tab1, text='Add new food review', command=lambda row=i, column=0:viewfooditemsbyestablishment(establishments,row,column))
             add_foodreview1.grid(row=i+2, column=1, pady=10)   
+            view_foodReviews = tk.Button(tab1, text='View all food reviews', bg='chartreuse4', fg='white', command=lambda row=i, column=0:viewFoodReviewsPerEstablishment(establishments,row,column))
+            view_foodReviews.grid(row=i+2, column=2, padx=10, pady=10) 
 
         viewAllFoodReviewsbutton = tk.Button(tab1, text='View all food reviews',bg='green', fg='white', command=viewAllFoodReviews)
         viewAllFoodReviewsbutton.grid(row=numofrows+2, column=1,pady=10)
