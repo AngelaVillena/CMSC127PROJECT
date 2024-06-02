@@ -2,9 +2,8 @@ import tkinter as tk
 from functools import partial
 from tkinter import Label, messagebox, ttk
 
-import mysql.connector
-
 import login_page
+import mysql.connector
 
 db = mysql.connector.connect(
     host="localhost",
@@ -37,8 +36,59 @@ def mainpage():
 
 
     tabControl.pack(expand=1, fill="both")
+    def deletefooditem(items, row, column):
+        
+            deletefoodid = items[row][column]
+            sql = "DELETE FROM Food_item WHERE Food_id = %s"
+            mycursor.execute(sql, (deletefoodid,))
+            db.commit()
+            messagebox.showinfo("Success", "Food item has been DELETED!")
+            
+    def editfooditem(items, row, column):
+        def submit_data():
+            foodid = items[row][column]
+           
+            food_name = foodname.get()
+            food_price = price.get()
+            type_of_food = typeoffood_list.get()
+            food_description = description.get()
+            food_businessid =items[row][5]
+            
        
-   
+            sql = "UPDATE FOOD_ITEM SET Name = %s, Price = %s, Type_of_food = %s, Description = %s, Business_id = %s WHERE Food_id = %s"
+            val = ( food_name, food_price,type_of_food,food_description,food_businessid, foodid)
+            mycursor.execute(sql, val)
+            db.commit()
+            print("Record inserted successfully!")
+            messagebox.showinfo("Success", "Food item has been recorded successfully!")
+            editfooditem.destroy()
+        editfooditem = tk.Toplevel(tab2)
+        editfooditem.geometry("700x300")
+        editfooditem.title("Edit food item")
+        typeoffood_list = ttk.Combobox(editfooditem,state="readonly",
+            values=["Appetizer", "Entree/ Main Dish", "Sides", "Dessert"]
+        )
+        
+        labels = ['Food name:', 'Price:','Type of food:','Description:']
+        for i in range(4):
+            tk.Label(editfooditem, text=labels[i]).grid(row=i, column=0, padx=10, pady=10)
+        
+
+        foodname = tk.Entry(editfooditem, width=40, font=('Arial', 14))
+        foodname.grid(row=0, column=1, columnspan=2)
+
+        price = tk.Entry(editfooditem, width=40, font=('Arial', 14))
+        price.grid(row=1, column=1, columnspan=2)
+
+        typeoffood_list.grid(row=2, column=1,columnspan=2)
+
+        description = tk.Entry(editfooditem, width=40, font=('Arial', 14))
+        description.grid(row=3, column=1, columnspan=2)
+
+
+        submit = tk.Button(editfooditem, text='Submit Now', command=submit_data)
+        submit.grid(row=4, column=1)  
+
 
     def add_fooditem():
  
@@ -64,9 +114,6 @@ def mainpage():
       typeoffood_list = ttk.Combobox(fooditem,state="readonly",
         values=["Appetizer", "Entree/ Main Dish", "Sides", "Dessert"]
       )
-
-      
-   
       
       labels = ['Food name:', 'Price:','Type of food:', 'Description','Business id:']
       for i in range(5):
@@ -176,6 +223,23 @@ def mainpage():
 
             submit = tk.Button(edit1, text='Edit', command=edit_submit_data)
             submit.grid(row=2, column=1, pady=10)
+
+        def viewFoodReviewsPerEstablishment(reviews,row,col):
+            businessid = reviews[row][col]
+            edit2 = tk.Toplevel(tab1)
+            edit2.geometry("700x500")
+            sql = "SELECT * FROM REVIEW WHERE Business_id = %s"
+            val = (businessid,)
+            mycursor.execute(sql,val)
+            reviews = mycursor.fetchall()
+
+            for i, review in enumerate(reviews):
+                for j, value in enumerate(review):
+                    tk.Label(edit2, text=value).grid(row=i, column=j, padx=10, pady=10)
+                tk.Button(edit2, text='Edit', command=lambda row=i, column=0: edit_foodreview(reviews, row, column)).grid(row=i, column=9)
+                deletebutton = tk.Button(edit2, text='Delete', bg='red', fg='white', command=lambda row=i, column=0: delete_foodreview(reviews, row, column))
+                deletebutton.grid(row=i, column=10, padx=10, pady=10) 
+
         def viewAllFoodReviews():
             edit2 = tk.Toplevel(tab1)
             edit2.geometry("700x500")
@@ -232,9 +296,7 @@ def mainpage():
             description.grid(row=2, column=1, columnspan=2)
 
             food_rating = tk.Scale(edit1, from_=0, to=10, orient="horizontal", length=200)
-            food_rating.grid(row=3, column=1, columnspan=2)
-
-         
+            food_rating.grid(row=3, column=1, columnspan=2) 
 
             userid = tk.Entry(edit1, width=40, font=('Arial', 14))
             userid.grid(row=4, column=1, columnspan=2)
@@ -253,6 +315,8 @@ def mainpage():
             tk.Label(tab1, text=establishment[1]).grid(row=i+2, column=0, padx=10, pady=10)
             add_foodreview1 = tk.Button(tab1, text='Add new food review', command=lambda row=i, column=0:viewfooditemsbyestablishment(establishments,row,column))
             add_foodreview1.grid(row=i+2, column=1, pady=10)   
+            view_foodReviews = tk.Button(tab1, text='View all food reviews', bg='chartreuse4', fg='white', command=lambda row=i, column=0:viewFoodReviewsPerEstablishment(establishments,row,column))
+            view_foodReviews.grid(row=i+2, column=2, padx=10, pady=10) 
 
         viewAllFoodReviewsbutton = tk.Button(tab1, text='View all food reviews',bg='green', fg='white', command=viewAllFoodReviews)
         viewAllFoodReviewsbutton.grid(row=numofrows+2, column=1,pady=10)
@@ -387,6 +451,11 @@ def mainpage():
                 for j, value in enumerate(item):
                     item1 = tk.Label(allFoodItems, text=value)
                     item1.grid(row=i+1, column=j, padx=10, pady=10)
+                    tk.Button(allFoodItems, text='Edit', command=partial(editfooditem, items, i, 0)).grid(row=i+1, column=8)
+                
+                    deletebutton = tk.Button(allFoodItems, text='Delete', bg='red', fg='white', command=partial(deletefooditem, items, i, 0))
+                    # 
+                    deletebutton.grid(row=i+1, column=9, padx=10, pady=10)
             AddFoodItem = tk.Button(allFoodItems, text='Add a new food item', command=add_fooditem)
             AddFoodItem.grid(row=numofrows+1, column=1, pady=10)
             
@@ -545,8 +614,8 @@ def mainpage():
 
 
 
-# login_page.login_page(mainpage)
-mainpage()
+login_page.login_page(mainpage)
+# mainpage()
 
 
 
