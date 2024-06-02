@@ -3,7 +3,7 @@ import mysql.connector
 db =  mysql.connector.connect(
   host  = "localhost",
   user= "root",
-  password="hershey",
+  password="angel",
   database = "finalproject"
 )
 
@@ -122,3 +122,16 @@ mycursor = db.cursor()
 
 
 #  alter table food_item change column `Price` `Price` int(5);
+# alter table establishmentreview change column `Review_no` `Review_no` int(5) auto_increment;
+
+# mycursor.execute("""
+#   alter table establishmentreview change column `Review_no` `Review_no` int(5) auto_increment
+# """)
+# mycursor.execute("""ALTER TABLE establishmentreview DROP FOREIGN KEY ESTABLISHMENTREVIEW_Business_id_fk""")
+# ALTER TABLE establishmentreview DROP FOREIGN KEY ESTABLISHMENTREVIEW_Business_id_fk;
+
+# mycursor.execute("""ALTER TABLE ESTABLISHMENTREVIEW CHANGE COLUMN `Business_id` `Business_id` int(5) NULL""")
+# mycursor.execute("""update food_establishment set Food_id = NULL""")
+# mycursor.execute("""DELETE FROM FOOD_ITEM WHERE Business_id = 12345""")
+# mycursor.execute("""DELETE FROM REVIEW WHERE Food_id = 1""")
+# mycursor.execute("""DELETE FROM FOOD_ESTABLISHMENT WHERE Business_id = 12345""")
