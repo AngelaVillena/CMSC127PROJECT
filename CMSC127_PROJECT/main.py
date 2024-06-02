@@ -4,12 +4,12 @@ from tkinter import Label, messagebox, ttk
 
 import mysql.connector
 
-import login_page
+#import login_page
 
 db = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="angel",
+    password="kirigiri07",
     database="finalproject"
 )
 
@@ -176,19 +176,69 @@ def mainpage():
 
             submit = tk.Button(edit1, text='Edit', command=edit_submit_data)
             submit.grid(row=2, column=1, pady=10)
+
         def viewAllFoodReviews():
+            def filterByDate():
+                selected_date = date_entry.get()
+                filter_type = filter_type_var.get()
+
+                if filter_type == "Year":
+                    sql = "SELECT * FROM REVIEW WHERE YEAR(Date) = %s"
+                elif filter_type == "Month":
+                    sql = "SELECT * FROM REVIEW WHERE MONTH(Date) = %s"
+                elif filter_type == "Day":
+                    sql = "SELECT * FROM REVIEW WHERE DAY(Date) = %s"
+                else:
+                    messagebox.showerror("Error", "Please select a filter type.")
+                    return
+
+                mycursor.execute(sql, (selected_date,))
+                reviews = mycursor.fetchall()
+                displayReviews(reviews)
+
+            def displayReviews(reviews):
+                for widget in review_frame.winfo_children():
+                    widget.destroy()
+
+                for i, review in enumerate(reviews):
+                    for j, value in enumerate(review):
+                        tk.Label(review_frame, text=value).grid(row=i, column=j, padx=10, pady=10)
+                    tk.Button(review_frame, text='Edit', command=lambda row=i, column=0: edit_foodreview(reviews, row, column)).grid(row=i, column=9)
+                    delete_button = tk.Button(review_frame, text='Delete', bg='red', fg='white', command=lambda row=i, column=0: delete_foodreview(reviews, row, column))
+                    delete_button.grid(row=i, column=10, padx=10, pady=10)
+
             edit2 = tk.Toplevel(tab1)
             edit2.geometry("700x500")
+            edit2.title("All Food Reviews")
+
+            date_frame = tk.Frame(edit2)
+            date_frame.grid(row=0, column=0, pady=10)
+
+            date_label = tk.Label(date_frame, text="Select Filter Type:")
+            date_label.grid(row=0, column=0)
+
+            filter_type_var = tk.StringVar()
+            filter_type_var.set("Year")  # Default selection
+            filter_type_options = ["Year", "Month", "Day"]
+            filter_type_dropdown = tk.OptionMenu(date_frame, filter_type_var, *filter_type_options)
+            filter_type_dropdown.grid(row=0, column=1)
+
+            date_label = tk.Label(date_frame, text="Enter Date:")
+            date_label.grid(row=1, column=0)
+
+            date_entry = tk.Entry(date_frame, width=15)
+            date_entry.grid(row=1, column=1)
+
+            date_button = tk.Button(date_frame, text="Filter", command=filterByDate)
+            date_button.grid(row=1, column=2)
+
+            review_frame = tk.Frame(edit2)
+            review_frame.grid(row=1, column=0)
+
             sql = "SELECT * FROM REVIEW"
             mycursor.execute(sql)
             reviews = mycursor.fetchall()
-
-            for i, review in enumerate(reviews):
-                for j, value in enumerate(review):
-                    tk.Label(edit2, text=value).grid(row=i, column=j, padx=10, pady=10)
-                tk.Button(edit2, text='Edit', command=lambda row=i, column=0: edit_foodreview(reviews, row, column)).grid(row=i, column=9)
-                deletebutton = tk.Button(edit2, text='Delete', bg='red', fg='white', command=lambda row=i, column=0: delete_foodreview(reviews, row, column))
-                deletebutton.grid(row=i, column=10, padx=10, pady=10) 
+            displayReviews(reviews)
 
         def viewfooditemsbyestablishment(establishments,row,column):
             def submit_data():
@@ -547,14 +597,3 @@ def mainpage():
 
 # login_page.login_page(mainpage)
 mainpage()
-
-
-
-
-
-
-
-
-
-
-
