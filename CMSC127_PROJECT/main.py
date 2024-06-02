@@ -323,12 +323,10 @@ def mainpage():
 
         numofrows = len(establishments)
 
-        # Headers
         headers = ['Business ID', 'Name', 'Address', 'Average Rating']
         for i, header in enumerate(headers):
             tk.Label(tab2, text=header).grid(row=0, column=i, padx=10, pady=10)
 
-        # Populate rows with establishment details and average ratings
         for i, establishment in enumerate(establishments):
             business_id = establishment[0]
             name = establishment[1]
@@ -340,7 +338,6 @@ def mainpage():
             tk.Label(tab2, text=address).grid(row=i + 1, column=2, padx=10, pady=10)
             tk.Label(tab2, text=avg_rating).grid(row=i + 1, column=3, padx=10, pady=10)
 
-    # Add a button to filter establishments by rating
         def filterByRating(tab2, establishments):
             rating_filter_window = tk.Toplevel(tab2)
             rating_filter_window.geometry("300x100")
@@ -353,7 +350,6 @@ def mainpage():
             apply_filter_button = tk.Button(rating_filter_window, text="Apply Filter", command=lambda: applyRatingFilter(tab2, establishments, min_rating_entry))
             apply_filter_button.grid(row=1, column=0, columnspan=2, pady=10)
 
-        # Function to apply the rating filter
         def applyRatingFilter(tab2, establishments, min_rating_entry):
             try:
                 min_rating = float(min_rating_entry.get())
