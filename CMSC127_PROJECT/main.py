@@ -8,7 +8,7 @@ import login_page
 
 db = mysql.connector.connect(
     host="localhost",
-    user="root",
+    user="finalproject",
     password="angel",
     database="finalproject"
 )
@@ -403,7 +403,7 @@ def mainpage():
         def viewEstablishmentReviews(items, row, col):
             def delete_foodestablishmentreview(reviews, row, column):
                 deletereviewno = reviews[row][column]
-                sql = "DELETE FROM ESTABLISHMENTREVIEW WHERE Review_no = %s"
+                sql = "DELETE FROM ESTABLISHMENT_REVIEW WHERE Review_no = %s"
                 mycursor.execute(sql, (deletereviewno,))
                 db.commit()
                 messagebox.showinfo("Success", "Food establishment review has been DELETED!")
@@ -414,7 +414,7 @@ def mainpage():
                     newdescription = editDescription.get()
                     newrating = edit_rating.get()
 
-                    sql = "UPDATE ESTABLISHMENTREVIEW SET Description = %s, Rating = %s WHERE Review_no = %s"
+                    sql = "UPDATE ESTABLISHMENT_REVIEW SET Description = %s, Rating = %s WHERE Review_no = %s"
                     val = (newdescription, newrating, reviewno)
                     mycursor.execute(sql, val)
                     db.commit()
@@ -447,7 +447,7 @@ def mainpage():
     
                     review_userid = userid.get()
 
-                    sql = "INSERT INTO ESTABLISHMENTREVIEW (Description, Rating, Time, Date, Business_id, User_id) VALUES (%s, %s, CURTIME(), CURDATE(), %s, %s)"
+                    sql = "INSERT INTO ESTABLISHMENT_REVIEW (Description, Rating, Time, Date, Business_id, User_id) VALUES (%s, %s, CURTIME(), CURDATE(), %s, %s)"
                     val = (review_description, review_rating, businessid, review_userid)
                     mycursor.execute(sql, val)
                     db.commit()
@@ -478,7 +478,7 @@ def mainpage():
             foodReviews.title("Establishment reviews")
         
             businessid = items[row][col]
-            sql = "SELECT * FROM ESTABLISHMENTREVIEW WHERE Business_id = " + str(businessid)
+            sql = "SELECT * FROM ESTABLISHMENT_REVIEW WHERE Business_id = " + str(businessid)
             mycursor.execute(sql)
             reviews = mycursor.fetchall()
             numofrows = len(reviews)
@@ -524,7 +524,7 @@ def mainpage():
             view_foodReviews = tk.Button(tab2, text='View all establishment reviews', command=partial(viewEstablishmentReviews, establishments, i, 0))
             view_foodReviews.grid(row=i+1, column=11, padx=10, pady=10) 
 
-            delete_foodEstablishment = tk.Button(tab2, text='Delete', bg='red', fg='white', command=partial(delete_foodestablishment, establishments, i, 0))
+            delete_foodEstablishment = tk.Button(tab2, text='Delete', bg='red', fg='white', command=partial(delete_foodestablishment, establishments, i, 5))
             delete_foodEstablishment.grid(row=i+1, column=12, padx=10, pady=10) 
 
         AddFoodEstablishment = tk.Button(tab2, text='Add a new food establishment', command=add_foodestablishment)
