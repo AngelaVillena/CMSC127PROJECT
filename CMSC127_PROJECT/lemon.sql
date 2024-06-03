@@ -1,6 +1,7 @@
 DROP DATABASE IF EXISTS `finalproject`;
 
-CREATE OR REPLACE USER 'finalproject'@'localhost' IDENTIFIED BY 'hershey';
+CREATE OR REPLACE USER 'finalproject'@'localhost' IDENTIFIED BY 'angel';
+
 
 CREATE DATABASE IF NOT EXISTS `finalproject`;
 GRANT ALL ON finalproject.* TO 'finalproject'@'localhost';
@@ -90,6 +91,8 @@ VALUES
     ('Amazing Filipino cuisine!', 5, '19:30:00', '2024-05-20', 1, 1),
     ('Incredible crepes!', 4, '13:00:00', '2024-05-22', 2, 2),
     ('Lovely coffee and desserts', 5, '15:45:00', '2024-05-25', 3, 3);
+
+
 
 
 
