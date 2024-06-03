@@ -1,6 +1,6 @@
 DROP DATABASE IF EXISTS `finalproject`;
 
-CREATE OR REPLACE USER 'finalproject'@'localhost' IDENTIFIED BY 'hershey';
+CREATE OR REPLACE USER 'finalproject'@'localhost' IDENTIFIED BY 'angel';
 
 
 CREATE DATABASE IF NOT EXISTS `finalproject`;
