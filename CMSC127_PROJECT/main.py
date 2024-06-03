@@ -342,6 +342,9 @@ def mainpage(userid):
     def viewFoodEstablishments(tab2, establishments, min_rating=None):
         def searchestablishments(search_entry, establishments, tab2):
             search_query = search_entry.get()
+            sql = "SELECT * FROM food_establishment"
+            mycursor.execute(sql)
+            establishments = mycursor.fetchall()
             filtered_establishments = [est for est in establishments if search_query.lower() in est[1].lower()]
             viewFoodEstablishments(tab2, filtered_establishments)
 
@@ -406,6 +409,16 @@ def mainpage(userid):
                 messagebox.showinfo("Success", "Food establishment has been recorded successfully!")
                 new_window.destroy()
                 
+                for labels in tab2.grid_slaves():
+                    if int(labels.grid_info()["row"]) > 1:
+                        labels.grid_forget()
+
+                newsql = "SELECT * from FOOD_ESTABLISHMENT"
+                mycursor.execute(newsql)
+                new_establishments = mycursor.fetchall()
+
+                viewFoodEstablishments(tab2, new_establishments)
+
             new_window = tk.Toplevel(tab2)
             new_window.geometry("700x300")
             new_window.title("Add food establishment")
@@ -438,7 +451,13 @@ def mainpage(userid):
             
             db.commit()
             messagebox.showinfo("Success", "Food establishment has been DELETED!")
+            
+            newsql = "SELECT * from FOOD_ESTABLISHMENT"
+            mycursor.execute(newsql)
+            new_establishments = mycursor.fetchall()
 
+            viewFoodEstablishments(tab2, new_establishments)
+            
         def edit_foodestablishment(items, row, col):
             def edit_submit_data(businessid):
                 editbusiness_name = editbusinessname.get()
@@ -451,19 +470,34 @@ def mainpage(userid):
                 messagebox.showinfo("Success", "Food establishment has been edited successfully!")
                 edit1.destroy()
 
+                newsql = "SELECT * from FOOD_ESTABLISHMENT"
+                mycursor.execute(newsql)
+                new_establishments = mycursor.fetchall()
+
+                viewFoodEstablishments(tab2, new_establishments)
+
             edit1 = tk.Toplevel(main_window)
             edit1.geometry("700x300")
             edit1.title("Edit food establishment")
             businessid = items[row][col]
 
+            sql = "SELECT * FROM food_establishment WHERE Business_id = " + str(businessid)
+            mycursor.execute(sql)
+            foodest = mycursor.fetchall()
+
+            entry_text1 = tk.StringVar()
+            entry_text2 = tk.StringVar()
+
             labels = ['Enter new business name:', 'Enter new business address:']
             for i in range(2):
                 tk.Label(edit1, text=labels[i]).grid(row=i, column=0, padx=10, pady=10)
         
-            editbusinessname = tk.Entry(edit1, width=40, font=('Arial', 14))
+            editbusinessname = tk.Entry(edit1, width=40, font=('Arial', 14), textvariable=entry_text1)
+            entry_text1.set(foodest[0][1])
             editbusinessname.grid(row=0, column=1, columnspan=2)
 
-            editbusinessaddress = tk.Entry(edit1, width=40, font=('Arial', 14))
+            editbusinessaddress = tk.Entry(edit1, width=40, font=('Arial', 14), textvariable=entry_text2)
+            entry_text2.set(foodest[0][2])
             editbusinessaddress.grid(row=1, column=1, columnspan=2)
             
             submit = tk.Button(edit1, text='Submit', command=lambda: edit_submit_data(businessid))
@@ -704,6 +738,10 @@ def mainpage(userid):
 
         search_button = tk.Button(search_frame, text="Search", command=lambda: searchestablishments(search_entry, establishments, tab2))
         search_button.pack(side=tk.LEFT)
+
+        establishment_frame = tk.Frame(tab2)
+        establishment_frame.grid(row=1, column = 0)
+
         sql = "SELECT * FROM FOOD_ESTABLISHMENT"
         mycursor.execute(sql)
         establishments1 = mycursor.fetchall()
@@ -711,27 +749,31 @@ def mainpage(userid):
         view = tk.Button(tab2, text="View all establishments", command=lambda: viewFoodEstablishments(tab2, establishments1))
         view.grid(row=0, column=1)
 
+        headers = [i[0] for i in mycursor.description]
+        for i in range(len(headers)):
+            tk.Label(tab2, text=headers[i]).grid(row=1, column=i, padx=10, pady=10)
+
         for i, establishment in enumerate(establishments):
             for j, value in enumerate(establishment):
-                tk.Label(tab2, text=value).grid(row=i + 1, column=j, padx=10, pady=10)
+                tk.Label(tab2, text=value).grid(row=i + 2, column=j, padx=10, pady=10)
 
             edit_foodEstablishment = tk.Button(tab2, text='Edit', command=partial(edit_foodestablishment, establishments, i, 0))
-            edit_foodEstablishment.grid(row=i + 1, column=9, padx=10, pady=10)
+            edit_foodEstablishment.grid(row=i + 2, column=9, padx=10, pady=10)
 
             view_foodItems = tk.Button(tab2, text='View all food items', command=partial(viewFoodItems, establishments, i, 0))
-            view_foodItems.grid(row=i + 1, column=10, padx=10)
+            view_foodItems.grid(row=i + 2, column=10, padx=10)
 
             view_foodReviews = tk.Button(tab2, text='View all establishment reviews', command=partial(viewEstablishmentReviews, establishments, i, 0))
-            view_foodReviews.grid(row=i + 1, column=11, padx=10, pady=10)
+            view_foodReviews.grid(row=i + 2, column=11, padx=10, pady=10)
 
             delete_foodEstablishment = tk.Button(tab2, text='Delete', bg='red', fg='white', command=partial(delete_foodestablishment, establishments, i, 0))
-            delete_foodEstablishment.grid(row=i + 1, column=12, padx=10, pady=10)
+            delete_foodEstablishment.grid(row=i + 2, column=12, padx=10, pady=10)
 
             filter_by_rating_button = tk.Button(tab2, text="Filter by Rating", command=lambda: filterByRating(tab2, establishments))
             filter_by_rating_button.grid(row=0, column=2)
 
         AddFoodEstablishment = tk.Button(tab2, text='Add a new food establishment', command=add_foodestablishment)
-        AddFoodEstablishment.grid(row=numofrows + 1, column=1, pady=10)
+        AddFoodEstablishment.grid(row=numofrows + 3, column=1, pady=10)
 
     viewFoodReviews(tab1)
     sql = "SELECT * FROM FOOD_ESTABLISHMENT"
