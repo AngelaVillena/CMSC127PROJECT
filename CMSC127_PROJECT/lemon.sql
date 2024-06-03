@@ -2,7 +2,6 @@ DROP DATABASE IF EXISTS `finalproject`;
 
 CREATE OR REPLACE USER 'finalproject'@'localhost' IDENTIFIED BY 'hershey';
 
-
 CREATE DATABASE IF NOT EXISTS `finalproject`;
 GRANT ALL ON finalproject.* TO 'finalproject'@'localhost';
 USE `finalproject`;
@@ -40,6 +39,7 @@ CREATE TABLE food_item (
     Business_id INT(5),
     CONSTRAINT FOOD_ITEM_Business_id_fk FOREIGN KEY(Business_id) REFERENCES FOOD_ESTABLISHMENT(Business_id)
 );
+
 CREATE TABLE review (
     Review_no INT(5) PRIMARY KEY AUTO_INCREMENT, 
     Description VARCHAR(50),
@@ -85,9 +85,11 @@ INSERT INTO REVIEW (Review_no, Description, Rating, Time, Date, Business_id, Foo
 (2, 'Delicious pancakes', 4, '09:00:00', '2024-05-16', 1, 3, 2),
 (3, 'Spaghetti was okay', 3, '18:45:00', '2024-05-17', 2, 2, 3);
 
-
-
-
+INSERT INTO establishment_review (Description, Rating, Time, Date, Business_id, User_id)
+VALUES
+    ('Amazing Filipino cuisine!', 5, '19:30:00', '2024-05-20', 1, 1006),
+    ('Incredible crepes!', 4, '13:00:00', '2024-05-22', 2, 1007),
+    ('Lovely coffee and desserts', 5, '15:45:00', '2024-05-25', 3, 1008);
 
 
 
