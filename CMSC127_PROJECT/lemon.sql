@@ -1,8 +1,6 @@
-
-
 DROP DATABASE IF EXISTS `finalproject`;
 
-CREATE OR REPLACE USER 'finalproject'@'localhost' IDENTIFIED BY 'angel';
+CREATE OR REPLACE USER 'finalproject'@'localhost' IDENTIFIED BY 'hershey';
 
 
 CREATE DATABASE IF NOT EXISTS `finalproject`;
@@ -20,11 +18,11 @@ CREATE TABLE user (
  );
 
 INSERT INTO user (Name, Age, Password, Username, Role) VALUES 
-('Ted Mosby', 28, PASSWORD('password'), 'Ted', 'admin'),
-('Lily Aldrin', 35, PASSWORD('password'), 'Lily', 'user'),
-('Rachel Greep', 22, PASSWORD('password'), 'Rachel', 'user'),
-('Regina Phalange', 30, PASSWORD('password'), 'Phoebe', 'moderator'),
-('Ken Adams', 26, PASSWORD('password'), 'Joey', 'user');
+('Ted Mosby', 28, PASSWORD('password'), 'Ted', 'Admin'),
+('Lily Aldrin', 35, PASSWORD('password'), 'Lily', 'User'),
+('Rachel Greep', 22, PASSWORD('password'), 'Rachel', 'User'),
+('Regina Phalange', 30, PASSWORD('password'), 'Phoebe', 'Moderator'),
+('Ken Adams', 26, PASSWORD('password'), 'Joey', 'User');
 
 
 CREATE TABLE food_establishment (
@@ -67,6 +65,7 @@ CREATE TABLE establishment_review (
      CONSTRAINT ESTABLISHMENT_REVIEW_Business_id_fk FOREIGN KEY(Business_id) REFERENCES FOOD_ESTABLISHMENT(Business_id) on delete cascade,
      CONSTRAINT ESTABLISHMENT_REVIEW_User_id_fk FOREIGN KEY (User_id) REFERENCES USER(User_id)
  );
+
 INSERT INTO FOOD_ESTABLISHMENT (Name, Address) VALUES 
 ('Joe\'s Inasal', 'Los Banos Laguna '),
 ('La creperie', 'Quezon City'),

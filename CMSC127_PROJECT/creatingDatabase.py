@@ -1,12 +1,12 @@
 import mysql.connector
 
+
 db =  mysql.connector.connect(
   host  = "localhost",
   user= "root",
   password="kirigiri07",
   database = "finalproject"
 )
-
 
 mycursor = db.cursor()
 

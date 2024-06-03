@@ -8,7 +8,7 @@ import mysql.connector
 db = mysql.connector.connect(
     host="localhost",
     user="finalproject",
-    password="angel",
+    password="hershey",
     database="finalproject"
 )
 
@@ -781,9 +781,6 @@ def mainpage():
 
 
 login_page.login_page(mainpage)
-# mainpage()
-login_page.login_page(mainpage)
-# mainpage()
 
 
 

@@ -7,7 +7,7 @@ import sign_up
 db = mysql.connector.connect(
     host="localhost",
     user="finalproject",
-    password="angel",
+    password="hershey",
     database="finalproject"
 )
 
@@ -18,7 +18,7 @@ def login_page(mainpage):
       username = username_entry.get()
       password = password_entry.get()
 
-      mycursor.execute("SELECT * FROM user WHERE Username = %s AND Password = %s", (username, password))
+      mycursor.execute("SELECT * FROM user WHERE Username = %s AND Password = password(%s)", (username, password))
 
       result = mycursor.fetchone()
       if result:
