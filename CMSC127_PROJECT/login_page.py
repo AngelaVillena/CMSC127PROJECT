@@ -7,7 +7,7 @@ import sign_up
 db = mysql.connector.connect(
     host="localhost",
     user="finalproject",
-    password="hershey",
+    password="angel",
     database="finalproject"
 )
 
@@ -33,6 +33,8 @@ def login_page(mainpage):
   parent = tk.Tk()
   parent.title("Login Form")
   parent.geometry("700x300")
+  a = tk.Label(parent, text = "CMSC 127 PROJECT BY: FERNANDEZ, LACABE, AND VILLENA")
+  a.pack(pady=10)
   username_label = tk.Label(parent, text="Username:")
   username_label.pack()
 
@@ -47,7 +49,7 @@ def login_page(mainpage):
   password_entry.pack()
 
   login_button = tk.Button(parent, text="Login", command=validate_login)
-  login_button.pack()
+  login_button.pack(pady=10)
 
   signup_button = tk.Button(parent, text="Signup", command= lambda: sign_up.signup_page(login_page))
   signup_button.pack()
