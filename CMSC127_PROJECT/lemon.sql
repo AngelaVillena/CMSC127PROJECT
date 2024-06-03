@@ -87,9 +87,9 @@ INSERT INTO REVIEW (Review_no, Description, Rating, Time, Date, Business_id, Foo
 
 INSERT INTO establishment_review (Description, Rating, Time, Date, Business_id, User_id)
 VALUES
-    ('Amazing Filipino cuisine!', 5, '19:30:00', '2024-05-20', 1, 1006),
-    ('Incredible crepes!', 4, '13:00:00', '2024-05-22', 2, 1007),
-    ('Lovely coffee and desserts', 5, '15:45:00', '2024-05-25', 3, 1008);
+    ('Amazing Filipino cuisine!', 5, '19:30:00', '2024-05-20', 1, 1),
+    ('Incredible crepes!', 4, '13:00:00', '2024-05-22', 2, 2),
+    ('Lovely coffee and desserts', 5, '15:45:00', '2024-05-25', 3, 3);
 
 
 
