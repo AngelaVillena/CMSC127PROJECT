@@ -8,7 +8,7 @@ import mysql.connector
 db = mysql.connector.connect(
     host="localhost",
     user="finalproject",
-    password="angel",
+    password="hershey",
     database="finalproject"
 )
 
@@ -208,6 +208,7 @@ def mainpage(userid):
     
                 item_dropdown = tk.OptionMenu(edit1, selected_item, *item_names)
                 item_dropdown.grid(row=1, column=0, padx=10, pady=10)
+
             labels = ['Description:', 'Rating:']
             for i, label in enumerate(labels):
                 tk.Label(edit1, text=label).grid(row=i+2, column=0, padx=10, pady=10)
@@ -318,6 +319,7 @@ def mainpage(userid):
                 new_establishments = mycursor.fetchall()
 
                 viewFoodEstablishments(tab2, new_establishments)
+                viewFoodReviews(tab1)
 
             new_window = tk.Toplevel(tab2)
             new_window.geometry("700x300")
@@ -358,6 +360,7 @@ def mainpage(userid):
             new_establishments = mycursor.fetchall()
 
             viewFoodEstablishments(tab2, new_establishments)
+            viewFoodReviews(tab1)
             
         def edit_foodestablishment(items, row, col):
             def edit_submit_data(businessid):
@@ -425,6 +428,12 @@ def mainpage(userid):
                     print("Record inserted successfully!")
                     messagebox.showinfo("Success", "Food item has been recorded successfully!")
                     fooditem.destroy()
+
+                    newsql = "SELECT * FROM FOOD_ITEM where Business_id = " + str(food_businessid) 
+                    mycursor.execute(newsql)
+                    new_food_items = mycursor.fetchall()
+                    update_food_items(new_food_items)
+
                 fooditem = tk.Toplevel(main_window)
                 fooditem.geometry("700x300")
                 fooditem.title("Add new food item")
@@ -480,7 +489,7 @@ def mainpage(userid):
                     messagebox.showinfo("Success", "Food item has been recorded successfully!")
                     editfooditem.destroy()
                     allFoodItems.destroy()
-                    viewFoodItems(items,row,col)
+                    # viewFoodItems(items,row,col)
                     
 
                 editfooditem = tk.Toplevel(tab2)
@@ -590,10 +599,6 @@ def mainpage(userid):
             allFoodItems.geometry("700x700")
             allFoodItems.title("Food Items")
             tk.Label(allFoodItems, text='FOOD ITEMS', font=('Arial', 14, 'bold')).pack(pady=5)
-           
-
-       
-         
 
             # Sort by price button
             tk.Button(allFoodItems, text='Sort by Price', command=lambda: viewByPrice(businessid)).pack(pady=5)
@@ -649,7 +654,7 @@ def mainpage(userid):
 
             for i in range(len(headers)):
                 tk.Label(food_items_frame, text=headers[i]).grid(row=0, column=i, padx=10, pady=10)
-            numofrows = len(items)
+     
             for i, item in enumerate(items):
                 for j, value in enumerate(item):
                     tk.Label(food_items_frame, text=value).grid(row=i+1, column=j, padx=10, pady=10)
@@ -698,9 +703,6 @@ def mainpage(userid):
                 edit1 = tk.Toplevel(tab2)
                 edit1.geometry("700x300")
                 edit1.title("Edit food establishment review")
-
-              
-
               
                 sql = "SELECT Description, Rating FROM establishment_review WHERE Review_no = " + str(reviews[row][column])
                 mycursor.execute(sql)
@@ -833,6 +835,7 @@ def mainpage(userid):
 
         AddFoodEstablishment = tk.Button(tab2, text='Add a new food establishment', command=add_foodestablishment)
         AddFoodEstablishment.grid(row=numofrows + 3, column=1, pady=10)
+
         def allEstablishmentReviews():
                 def filterByDate():
                     selected_date = date_entry.get()
