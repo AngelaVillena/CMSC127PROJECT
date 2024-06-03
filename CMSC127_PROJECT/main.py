@@ -467,8 +467,6 @@ def mainpage(userid):
             
             submit = tk.Button(edit1, text='Submit', command=lambda: edit_submit_data(businessid))
             submit.grid(row=3, column=1)
-        
- 
 
         def viewFoodItems(items, row, col):
             def add_fooditem(businessid):
@@ -611,6 +609,7 @@ def mainpage(userid):
                     update_food_items(items)
                 filtered_items = [item for item in items if search_query in item[1].lower()]
                 update_food_items(filtered_items)
+                
 
             def filter_by_price_range():
                 min_price = min_price_entry.get().strip()
@@ -632,11 +631,11 @@ def mainpage(userid):
                 for i, item in enumerate(display_items):
                     for j, value in enumerate(item):
                         item_label = tk.Label(food_items_frame, text=value, font=('Arial', 10))
-                        item_label = tk.Label(food_items_frame, text=value, font=('Arial', 10))
                         item_label.grid(row=i, column=j, padx=10, pady=5, sticky="w")
-                    tk.Button(food_items_frame, text='Edit', command=partial(editfooditem, items, i, 0)).grid(row=i, column=7)
-                    deletebutton = tk.Button(food_items_frame, text='Delete', bg='red', fg='white', command=partial(deletefooditem, items, i, 0))
-                    deletebutton.grid(row=i, column=8, padx=10, pady=5)
+                        tk.Button(food_items_frame, text='Edit', command=partial(editfooditem, items, i, 0)).grid(row=i, column=7)
+                        deletebutton = tk.Button(food_items_frame, text='Delete', bg='red', fg='white', command=partial(deletefooditem, items, i, 0))
+                        deletebutton.grid(row=i, column=8, padx=10, pady=5)
+ 
 
             def viewByType(businessid):
                 sql = "SELECT * FROM food_item WHERE Business_id = %s AND Type_of_food = %s"
@@ -658,53 +657,52 @@ def mainpage(userid):
             allFoodItems = tk.Toplevel(tab2)
             allFoodItems.geometry("700x700")
             allFoodItems.title("Food Items")
+            tk.Label(allFoodItems, text='FOOD ITEMS', font=('Arial', 14, 'bold')).pack(pady=5)
 
-            # Label for the new window
-            tk.Label(allFoodItems, text='FOOD ITEMS', font=('Arial', 14, 'bold')).grid(row=0, column=0, columnspan=4, padx=30, pady=(15, 5), sticky='n')
+            # Sort by price button
+            tk.Button(allFoodItems, text='Sort by Price', command=lambda: viewByPrice(businessid)).pack(pady=5)
 
-            # Search frame
-            search_frame = tk.Frame(allFoodItems)
-            search_frame.grid(row=1, column=0, columnspan=4, pady=10, padx=30, sticky='ew')
-            search_entry = tk.Entry(search_frame, width=50)
-            search_entry.pack(side=tk.LEFT, padx=5)
-            search_button = tk.Button(search_frame, text="Search", command=search_items)
-            search_button.pack(side=tk.LEFT, padx=5)
-
-            # Button to add a new food item
-            tk.Button(allFoodItems, text='Add a new food item', command=partial(add_fooditem, businessid), bg='').grid(row=2, column=3, pady=5, padx=(0, 20), sticky='e')
-
-            # Filter by food type
-            tk.Label(allFoodItems, text="Filter by Food Type: ").grid(row=2, column=0, pady=5, padx=(10, 0), sticky='w')
+            # Food type label and combobox
+            tk.Label(allFoodItems, text="Filter by Food Type: ").pack(pady=5)
             var = tk.StringVar()
             typeoffood = ttk.Combobox(allFoodItems, textvariable=var)
             typeoffood['values'] = ["Appetizer", "Entree/ Main Dish", "Sides", "Dessert"]
             typeoffood['state'] = 'readonly'
-            typeoffood.grid(row=2, column=1, pady=5, padx=(0, 5), sticky='w')
+            typeoffood.pack()
 
             # OK button for applying food type filter
-            tk.Button(allFoodItems, text='Apply Filter', command=lambda: viewByType(businessid), bg="lightblue").grid(row=2, column=2, padx=(5, 10), pady=5, sticky='w')
+            tk.Button(allFoodItems, text='Apply Filter', command=lambda: viewByType(businessid)).pack(pady=5)
+
+            # # Reset filter button
+            # tk.Button(allFoodItems, text='Reset Filter', command=lambda: update_food_items(items)).grid(row=4, column=1, padx=(10, 5), pady=5, sticky='w')
+            
+            search_frame = tk.Frame(allFoodItems)
+            search_frame.pack(pady=10)
+
+            search_entry = tk.Entry(search_frame, width=50)
+            search_entry.pack(side=tk.LEFT, padx=5)
+
+            search_button = tk.Button(search_frame, text="Search", command=search_items)
+            search_button.pack(side=tk.LEFT)
 
             # Price range filter frame
             price_range_frame = tk.Frame(allFoodItems)
-            price_range_frame.grid(row=3, column=0, columnspan=4, pady=10, padx=30, sticky='ew')
+            price_range_frame.pack(pady=10)
+
             tk.Label(price_range_frame, text="Min Price:").pack(side=tk.LEFT, padx=5)
             min_price_entry = tk.Entry(price_range_frame, width=8)
             min_price_entry.pack(side=tk.LEFT)
+
             tk.Label(price_range_frame, text="Max Price:").pack(side=tk.LEFT, padx=5)
             max_price_entry = tk.Entry(price_range_frame, width=8)
             max_price_entry.pack(side=tk.LEFT)
-            filter_price_button = tk.Button(price_range_frame, text="Filter by Price Range", command=filter_by_price_range, bg="lightblue")
+
+            filter_price_button = tk.Button(price_range_frame, text="Filter by Price Range", command=filter_by_price_range)
             filter_price_button.pack(side=tk.LEFT, padx=5)
-
-            # Sort by price button
-            tk.Button(allFoodItems, text='Sort by Price', command=lambda: viewByPrice(businessid), bg="lightblue").grid(row=4, column=0, padx=30, pady=5, sticky='w')
-
-            # Reset filter button
-            tk.Button(allFoodItems, text='Reset Filter', command=lambda: update_food_items(items)).grid(row=4, column=1, padx=(10, 5), pady=5, sticky='w')
 
             # Frame for displaying food items
             food_items_frame = tk.Frame(allFoodItems)
-            food_items_frame.grid(row=5, column=0, columnspan=4, pady=10, padx=30)
+            food_items_frame.pack(pady=10)
 
             # Fetch and display food items from the database
             sql = "SELECT * FROM food_item WHERE Business_id = %s"
@@ -718,10 +716,21 @@ def mainpage(userid):
      
             for i, item in enumerate(items):
                 for j, value in enumerate(item):
-                    tk.Label(food_items_frame, text=value, font=('Arial', 10)).grid(row=i+1, column=j, padx=10, pady=5)
-                tk.Button(food_items_frame, text='Edit', command=partial(editfooditem, items, i, 0)).grid(row=i+1, column=7)
+                    tk.Label(food_items_frame, text=value).grid(row=i+1, column=j, padx=10, pady=10)
+                tk.Button(food_items_frame, text='Edit', command=partial(editfooditem, items, i, 0)).grid(row=i+1, column=8)
                 deletebutton = tk.Button(food_items_frame, text='Delete', bg='red', fg='white', command=partial(deletefooditem, items, i, 0))
-                deletebutton.grid(row=i+1, column=8, padx=10, pady=5)
+                deletebutton.grid(row=i+1, column=9, padx=10, pady=10)
+
+             # Button to add a new food item
+            tk.Button(allFoodItems, text='Add a new food item', command=partial(add_fooditem, businessid)).pack(pady=5)
+            tk.Button(allFoodItems, text='Sort by Price', command=lambda: viewByPrice(businessid)).grid(row=0, column=1, padx=10, pady=10)
+            tk.Label(allFoodItems, text="Food Type: ").grid(row=0, column=2, padx=10, pady=10)
+            var = tk.StringVar()
+            typeoffood = ttk.Combobox(allFoodItems, textvariable=var)
+            typeoffood['values'] = ["Appetizer", "Entree/ Main Dish", "Sides", "Dessert"]
+            typeoffood['state'] = 'readonly'
+            typeoffood.grid(row=0, column=3, columnspan=2)
+            tk.Button(allFoodItems, text='Apply Filter', command=lambda: viewByType(businessid)).grid(row=0, column=5, padx=10, pady=10)
 
         def viewEstablishmentReviews(items, row, col):
             def delete_foodestablishmentreview(reviews, row, column):
@@ -834,13 +843,9 @@ def mainpage(userid):
             button = tk.Button(foodReviews, text='Add a food establishment review', command=add_foodestablishmentreview)
             button.grid(row=numofrows + 1, column=1, pady=10, padx=10)
 
-        
-
-        
-
         for widget in tab2.winfo_children():
             widget.destroy()
-        
+
         numofrows = len(establishments)
         search_frame = tk.Frame(tab2)
         search_frame.grid(row=0, column=0)
@@ -858,7 +863,6 @@ def mainpage(userid):
         mycursor.execute(sql)
         establishments1 = mycursor.fetchall()
 
-        # View all establishments button
         view = tk.Button(tab2, text="View all establishments", bg='green', command=lambda: viewFoodEstablishments(tab2, establishments1))
         view.grid(row=0, column=1)
         
@@ -869,101 +873,26 @@ def mainpage(userid):
 
         for i, establishment in enumerate(establishments):
             for j, value in enumerate(establishment):
-                tk.Label(tab2, text=value, font=('Arial', 12)).grid(row=i + 2, column=j, padx=10, pady=10)
+                tk.Label(tab2, text=value).grid(row=i + 2, column=j, padx=10, pady=10)
 
             edit_foodEstablishment = tk.Button(tab2, text='Edit', command=partial(edit_foodestablishment, establishments, i, 0), bg='powder blue')
             edit_foodEstablishment.grid(row=i + 2, column=11, padx=10, pady=10)
 
-            view_foodItems = tk.Button(tab2, text='View all food items', bg='lightgreen', command=partial(viewFoodItems, establishments, i, 0))
+            view_foodItems = tk.Button(tab2, text='View all food items', command=partial(viewFoodItems, establishments, i, 0))
             view_foodItems.grid(row=i + 2, column=10, padx=10)
+           
 
-            view_foodReviews = tk.Button(tab2, text='View all establishment reviews', bg='lightgreen', command=partial(viewEstablishmentReviews, establishments, i, 0))
-            view_foodReviews.grid(row=i + 2, column=11, padx=10, pady=10)
+            view_foodReviews = tk.Button(tab2, text='View establishment reviews', command=partial(viewEstablishmentReviews, establishments, i, 0))
+            view_foodReviews.grid(row=i + 2, column=9, padx=10, pady=10)
 
             delete_foodEstablishment = tk.Button(tab2, text='Delete', bg='red', fg='white', command=partial(delete_foodestablishment, establishments, i, 0))
             delete_foodEstablishment.grid(row=i + 2, column=12, padx=10, pady=10)
 
-        filter_by_rating_button = tk.Button(tab2, text="Filter by Rating", bg='lightgreen', command=lambda: filterByRating(tab2, establishments))
-        filter_by_rating_button.grid(row=0, column=2, pady=10, padx=(10, 0))
+            filter_by_rating_button = tk.Button(tab2, text="Filter by Rating", command=lambda: filterByRating(tab2, establishments))
+            filter_by_rating_button.grid(row=0, column=2)
 
-        AddFoodEstablishment = tk.Button(tab2, text='Add a new food establishment', bg='lightblue', command=add_foodestablishment)
-        AddFoodEstablishment.grid(row=0, column=2, sticky='ne', pady=10, padx=10)
-
-
-
-        def allEstablishmentReviews():
-                def filterByDate():
-                    selected_date = date_entry.get()
-                    filter_type = filter_type_var.get()
-
-                    if filter_type == "Year":
-                        sql = "SELECT * FROM REVIEW WHERE YEAR(Date) = %s"
-                    elif filter_type == "Month":
-                        sql = "SELECT * FROM REVIEW WHERE MONTH(Date) = %s"
-                    elif filter_type == "Day":
-                        sql = "SELECT * FROM REVIEW WHERE DAY(Date) = %s"
-                    else:
-                        messagebox.showerror("Error", "Please select a filter type.")
-                        return
-
-                    mycursor.execute(sql, (selected_date,))
-                    reviews = mycursor.fetchall()
-                    displayReviews(reviews)
-                def displayReviews(reviews):
-                    for widget in review_frame.winfo_children():
-                        widget.destroy()
-
-                    headers = [i[0] for i in mycursor.description]
-
-                    for i in range(len(headers)):
-                        tk.Label(review_frame, text=headers[i]).grid(row=0, column=i, padx=10, pady=10)
-
-                    for i, review in enumerate(reviews):
-                        for j, value in enumerate(review):
-                            tk.Label(review_frame, text=value).grid(row=i+1, column=j, padx=10, pady=10)
-                        
-                foodReviews = tk.Toplevel(tab2)
-                foodReviews.geometry("1000x500")
-                foodReviews.title("All Establishment reviews")
-                review_frame = tk.Frame(foodReviews)
-                review_frame.grid(row=1, column=0)
-
-                
-                sql = "SELECT * FROM ESTABLISHMENT_REVIEW" 
-                mycursor.execute(sql)
-                reviews = mycursor.fetchall()
-               
-                headers = [i[0] for i in mycursor.description]
-                date_frame = tk.Frame(foodReviews)
-                date_frame.grid(row=0, column=0, pady=10)
-
-                date_label = tk.Label(date_frame, text="Select Filter Type:")
-                date_label.grid(row=0, column=0)
-
-                filter_type_var = tk.StringVar()
-                filter_type_var.set("Year") 
-                filter_type_options = ["Year", "Month", "Day"]
-                filter_type_dropdown = tk.OptionMenu(date_frame, filter_type_var, *filter_type_options)
-                filter_type_dropdown.grid(row=0, column=1)
-
-                date_label = tk.Label(date_frame, text="Enter Date:")
-                date_label.grid(row=1, column=0)
-
-                date_entry = tk.Entry(date_frame, width=15)
-                date_entry.grid(row=1, column=1)
-
-                date_button = tk.Button(date_frame, text="Filter", command=filterByDate)
-                date_button.grid(row=1, column=2)
-
-                for i in range(len(headers)):
-                    tk.Label(review_frame, text=headers[i]).grid(row=2, column=i, padx=10, pady=10)
-                for i, review in enumerate(reviews):
-                    for j, value in enumerate(review):
-                        tk.Label(review_frame, text=value).grid(row=i+3, column=j, padx=10, pady=10)
-                 
-
-        allEstablishmentReviewsButton = tk.Button(tab2, text='View ALL food establishment reviews', command=allEstablishmentReviews)
-        allEstablishmentReviewsButton.grid(row=numofrows + 4, column=1, pady=10)
+        AddFoodEstablishment = tk.Button(tab2, text='Add a new food establishment', command=add_foodestablishment)
+        AddFoodEstablishment.grid(row=numofrows + 3, column=1, pady=10)
 
         def allEstablishmentReviews():
                 def filterByDate():
