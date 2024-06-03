@@ -22,9 +22,10 @@ def login_page(mainpage):
 
       result = mycursor.fetchone()
       if result:
+          userid = result[0]
           messagebox.showinfo("Login Successful", "Welcome, %s!" % username)
           parent.destroy()
-          mainpage()
+          mainpage(userid)
       else:
           messagebox.showerror("Login Failed", "Invalid username or password")
     

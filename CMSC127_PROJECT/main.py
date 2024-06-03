@@ -14,30 +14,23 @@ db = mysql.connector.connect(
 
 mycursor = db.cursor()
 
-
-def mainpage():
-
+def mainpage(userid):
     main_window = tk.Tk()
-    
     main_window.geometry("1000x500")
     main_window.title("FINAL PROJECT")
-    
 
     tabControl = ttk.Notebook(main_window)
 
     tab1 = ttk.Frame(tabControl)
     tab2 = ttk.Frame(tabControl)
-    tab3 = ttk.Frame(tabControl)
-
 
     tabControl.add(tab1, text='Add a food review')
     tabControl.add(tab2, text='Edit a food review')
     tabControl.add(tab2, text='Add a food establishment')
 
-
     tabControl.pack(expand=1, fill="both")
+
     def deletefooditem(items, row, column):
-            
             deletefoodid = items[row][column]
             sql1 = "DELETE FROM review WHERE Food_id = %s"
             mycursor.execute(sql1, (deletefoodid,))
@@ -142,8 +135,7 @@ def mainpage():
 
     def viewFoodReviews(tab1):   
         for widget in tab1.winfo_children():
-            widget.destroy()
-                
+            widget.destroy()                
 
         def delete_foodreview(reviews, row, column):
             deletereviewno = reviews[row][column]
@@ -152,48 +144,6 @@ def mainpage():
             db.commit()
             messagebox.showinfo("Success", "Food review has been DELETED!")
             viewFoodReviews(tab1)
-
-        def add_foodreview():
-            def submit_data():
-                review_description = description.get()
-                review_rating = food_rating.get()
-                review_businessid = businessid.get()
-                review_foodid = foodid.get()
-                review_userid = userid.get()
-
-                sql = "INSERT INTO REVIEW (Description, Rating, Time, Date, Business_id, Food_id, User_id) VALUES (%s, %s, CURTIME(), CURDATE(), %s, %s, %s)"
-                val = (review_description, review_rating, review_businessid, review_foodid, review_userid)
-                mycursor.execute(sql, val)
-                db.commit()
-                messagebox.showinfo("Success", "Review has been recorded successfully!")
-                foodreview.destroy()
-                viewFoodReviews(tab1) 
-
-            foodreview = tk.Toplevel(tab1)
-            foodreview.geometry("700x300")
-            foodreview.title("Add new food review")
-
-            labels = ['Description:', 'Rating:', 'Business id:', 'Food id:', 'User id:']
-            for i, label in enumerate(labels):
-                tk.Label(foodreview, text=label).grid(row=i, column=0, padx=10, pady=10)
-
-            description = tk.Entry(foodreview, width=40, font=('Arial', 14))
-            description.grid(row=0, column=1, columnspan=2)
-
-            food_rating = tk.Scale(foodreview, from_=0, to=10, orient="horizontal", length=200)
-            food_rating.grid(row=1, column=1, columnspan=2)
-
-            businessid = tk.Entry(foodreview, width=40, font=('Arial', 14))
-            businessid.grid(row=2, column=1, columnspan=2)
-
-            foodid = tk.Entry(foodreview, width=40, font=('Arial', 14))
-            foodid.grid(row=3, column=1, columnspan=2)
-
-            userid = tk.Entry(foodreview, width=40, font=('Arial', 14))
-            userid.grid(row=4, column=1, columnspan=2)
-
-            submit = tk.Button(foodreview, text='Submit Now', command=submit_data)
-            submit.grid(row=5, column=1)
 
         def edit_foodreview(reviews, row, column):
             def edit_submit_data():
@@ -216,11 +166,18 @@ def mainpage():
             labels = ['Enter Description:', 'Rating:']
             for i, label in enumerate(labels):
                 tk.Label(edit1, text=label).grid(row=i, column=0, padx=10, pady=10)
+            
+            sql = 'SELECT Description, Rating from review where Review_no = ' + str(reviews[row][column]) 
+            mycursor.execute(sql)
+            review = mycursor.fetchall()
 
-            editDescription = tk.Entry(edit1, width=40, font=('Arial', 14))
+            entry_text = tk.StringVar()   
+            editDescription = tk.Entry(edit1, width=40, font=('Arial', 14), textvariable=entry_text)
+            entry_text.set(review[0][0])
             editDescription.grid(row=0, column=1, columnspan=2)
 
             edit_rating = tk.Scale(edit1, from_=0, to=10, orient="horizontal", length=200)
+            edit_rating.set(review[0][1])
             edit_rating.grid(row=1, column=1, columnspan=2)
 
             submit = tk.Button(edit1, text='Edit', command=edit_submit_data)
@@ -235,14 +192,17 @@ def mainpage():
             mycursor.execute(sql, val)
             reviews = mycursor.fetchall()
 
+            headers = [i[0] for i in mycursor.description]
+
+            for i in range(len(headers)):
+                tk.Label(edit2, text=headers[i]).grid(row=0, column=i, padx=10, pady=10)
+
             for i, review in enumerate(reviews):
                 for j, value in enumerate(review):
-                    tk.Label(edit2, text=value).grid(row=i, column=j, padx=10, pady=10)
-                tk.Button(edit2, text='Edit', command=lambda row=i, column=0: edit_foodreview(reviews, row, column)).grid(row=i, column=9)
+                    tk.Label(edit2, text=value).grid(row=i+1, column=j, padx=10, pady=10)
+                tk.Button(edit2, text='Edit', command=lambda row=i, column=0: edit_foodreview(reviews, row, column)).grid(row=i+1, column=j+1)
                 deletebutton = tk.Button(edit2, text='Delete', bg='red', fg='white', command=lambda row=i, column=0: delete_foodreview(reviews, row, column))
-                deletebutton.grid(row=i, column=10, padx=10, pady=10)
-
-
+                deletebutton.grid(row=i+1, column=j+2, padx=10, pady=10)
 
         def viewAllFoodReviews():
             def filterByDate():
@@ -267,12 +227,17 @@ def mainpage():
                 for widget in review_frame.winfo_children():
                     widget.destroy()
 
+                headers = [i[0] for i in mycursor.description]
+
+                for i in range(len(headers)):
+                    tk.Label(review_frame, text=headers[i]).grid(row=0, column=i, padx=10, pady=10)
+
                 for i, review in enumerate(reviews):
                     for j, value in enumerate(review):
-                        tk.Label(review_frame, text=value).grid(row=i, column=j, padx=10, pady=10)
-                    tk.Button(review_frame, text='Edit', command=lambda row=i, column=0: edit_foodreview(reviews, row, column)).grid(row=i, column=9)
+                        tk.Label(review_frame, text=value).grid(row=i+1, column=j, padx=10, pady=10)
+                    tk.Button(review_frame, text='Edit', command=lambda row=i, column=0: edit_foodreview(reviews, row, column)).grid(row=i+1, column=j+1)
                     delete_button = tk.Button(review_frame, text='Delete', bg='red', fg='white', command=lambda row=i, column=0: delete_foodreview(reviews, row, column))
-                    delete_button.grid(row=i, column=10, padx=10, pady=10)
+                    delete_button.grid(row=i+1, column=j+2, padx=10, pady=10)
 
             edit2 = tk.Toplevel(tab1)
             edit2.geometry("700x500")
@@ -304,23 +269,25 @@ def mainpage():
 
             sql = "SELECT * FROM REVIEW"
             mycursor.execute(sql)
+            
             reviews = mycursor.fetchall()
             displayReviews(reviews)
 
-        def viewfooditemsbyestablishment(establishments,row,column):
+        def addFoodReview(establishments,row,column):
             def submit_data():
                 review_description = description.get()
                 review_rating = food_rating.get()
                 review_businessid = business_id
                 review_foodid = item_dict[selected_item.get()]
-                review_userid = userid.get()
+                review_userid = userid
 
                 sql = "INSERT INTO REVIEW (Description, Rating, Time, Date, Business_id, Food_id, User_id) VALUES (%s, %s, CURTIME(), CURDATE(), %s, %s, %s)"
                 val = (review_description, review_rating, review_businessid, review_foodid, review_userid)
                 mycursor.execute(sql, val)
                 db.commit()
                 messagebox.showinfo("Success", "Review has been recorded successfully!")
-          
+                edit1.destroy()
+
             business_id = establishments[row][column]
             edit1 = tk.Toplevel(tab1)
             edit1.geometry("700x500")
@@ -341,7 +308,7 @@ def mainpage():
     
                 item_dropdown = tk.OptionMenu(edit1, selected_item, *item_names)
                 item_dropdown.grid(row=1, column=0, padx=10, pady=10)
-            labels = ['Description:', 'Rating:',  'User id:']
+            labels = ['Description:', 'Rating:']
             for i, label in enumerate(labels):
                 tk.Label(edit1, text=label).grid(row=i+2, column=0, padx=10, pady=10)
 
@@ -350,9 +317,6 @@ def mainpage():
 
             food_rating = tk.Scale(edit1, from_=0, to=10, orient="horizontal", length=200)
             food_rating.grid(row=3, column=1, columnspan=2) 
-
-            userid = tk.Entry(edit1, width=40, font=('Arial', 14))
-            userid.grid(row=4, column=1, columnspan=2)
 
             submit = tk.Button(edit1, text='Submit Now', command =submit_data)
             submit.grid(row=5, column=1)
@@ -366,7 +330,7 @@ def mainpage():
         numofrows =len(establishments)
         for i, establishment in enumerate(establishments):
             tk.Label(tab1, text=establishment[1]).grid(row=i+2, column=0, padx=10, pady=10)
-            add_foodreview1 = tk.Button(tab1, text='Add new food review', command=lambda row=i, column=0:viewfooditemsbyestablishment(establishments,row,column))
+            add_foodreview1 = tk.Button(tab1, text='Add new food review', command=lambda row=i, column=0:addFoodReview(establishments,row,column))
             add_foodreview1.grid(row=i+2, column=1, pady=10)   
             view_foodReviews = tk.Button(tab1, text='View food reviews', bg='chartreuse4', fg='white', command=lambda row=i, column=0:viewFoodReviewsPerEstablishment(establishments,row,column))
             view_foodReviews.grid(row=i+2, column=2, padx=10, pady=10) 
