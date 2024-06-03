@@ -36,7 +36,7 @@ CREATE TABLE food_establishment (
 CREATE TABLE food_item (
     Food_id INT(5) PRIMARY KEY AUTO_INCREMENT,
     Name VARCHAR(50) NOT NULL,
-    Price NUMERIC(4,2) NOT NULL,
+    Price DECIMAL(8,2) NOT NULL,
     Type_of_food VARCHAR(20),
     Description VARCHAR(100),
     Business_id INT(5),
