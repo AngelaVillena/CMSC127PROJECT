@@ -3,7 +3,7 @@ import mysql.connector
 db =  mysql.connector.connect(
   host  = "localhost",
   user= "root",
-  password="angel",
+  password="kirigiri07",
   database = "finalproject"
 )
 
@@ -113,7 +113,7 @@ mycursor = db.cursor()
 
 # CREATES ESTABLISHMENT REVIEW TABLE
 # mycursor.execute("""
-# CREATE TABLE ESTABLISHMENT_REVIEW (
+# CREATE OR REPLACE TABLE ESTABLISHMENT_REVIEW (
 #     Review_no INT(5) PRIMARY KEY , 
 #     Description VARCHAR(50),
 #     Rating decimal(3,2),

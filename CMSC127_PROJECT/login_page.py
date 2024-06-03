@@ -6,7 +6,7 @@ import sign_up
 
 db = mysql.connector.connect(
     host="localhost",
-    user="root",
+    user="finalproject",
     password="angel",
     database="finalproject"
 )
