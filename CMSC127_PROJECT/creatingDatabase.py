@@ -24,14 +24,14 @@ mycursor = db.cursor()
 
 # CREATES FOODITEM TABLE
 # mycursor.execute("""
-#     CREATE TABLE FOOD_ITEM (
+#     CREATE OR REPLACE TABLE FOOD_ITEM (
 #         Food_id INT(5) PRIMARY KEY,
 #         Name VARCHAR(20) NOT NULL,
 #         Price NUMERIC(4,2) NOT NULL,
 #         Type_of_food VARCHAR(20),
 #         Description VARCHAR(50),
 #         Business_id INT(5),
-#         CONSTRAINT FOOD_ITEM_Business_id_fk FOREIGN KEY(Business_id) REFERENCES FOOD_ESTABLISHMENT(Business_id)
+#         CONSTRAINT FOOD_ITEM_Business_id_fk FOREIGN KEY(Business_id) REFERENCES FOOD_ESTABLISHMENT(Business_id) on delete cascade
 #     )
 # """)
 
@@ -45,7 +45,7 @@ mycursor = db.cursor()
 #     Date DATE,
 #     Business_id INT(5),   
 #     Food_id INT(5),
-#     CONSTRAINT REVIEW_Business_id_fk FOREIGN KEY(Business_id) REFERENCES FOOD_ESTABLISHMENT(Business_id),
+#     CONSTRAINT REVIEW_Business_id_fk FOREIGN KEY(Business_id) REFERENCES FOOD_ESTABLISHMENT(Business_id) on delete cascade,
 #     CONSTRAINT REVIEW_Food_id_fk FOREIGN KEY(Food_id) REFERENCES FOOD_ITEM(Food_id)
 # );
 # """)
@@ -60,6 +60,16 @@ mycursor = db.cursor()
 #     Username VARCHAR(50) NOT NULL
 # );
 # """)
+
+# mycursor.execute("DROP TABLE IF EXISTS `USER`")
+# mycursor.execute("""CREATE TABLE USER (
+#     User_id INT(10) PRIMARY KEY,
+#     Name VARCHAR(50) NOT NULL,
+#     Age INT(2),
+#     Password VARCHAR(50) NOT NULL,
+#     Username VARCHAR(50) NOT NULL
+# )""")
+
 
 # ADD USER ID FOR FOREIGN KEY IN REVIEW TABLE
 # mycursor.execute("""
